@@ -1,6 +1,9 @@
 "use client";
-import React, { useState } from "react";
 import { Colors } from "@/app/config/theme/Colors";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import axios from "axios";
@@ -10,8 +13,9 @@ const LoginForm: React.FC = () => {
   const [usuario, setUsuario] = useState("");
   const [contraseña, setContraseña] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/login" || "http://localhost:3000/api/auth/login";
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/login" || "http://localhost:3000/api/auth/login";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,12 +29,19 @@ const LoginForm: React.FC = () => {
       );
 
       console.log("Respuesta:", response);
-      window.location.href = "/dashboard";
+
+      router.push("/map");
     } catch (error) {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
       console.error("Error:", error);
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      console.log("El código se ejecuta en el cliente");
+    }
+  }, []);
 
   return (
     <div className="relative flex items-center justify-center">
