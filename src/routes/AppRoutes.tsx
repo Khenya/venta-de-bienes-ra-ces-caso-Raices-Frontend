@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import List from "../pages/List";
+import List from "../pages/list";
 import Map from "../pages/map";
 import Login from "../pages/Login";
-import Edit from "../pages/Edit";
+import Edit from "../pages/edit";
 
 const AppRoutes = () => (
   <Router>
