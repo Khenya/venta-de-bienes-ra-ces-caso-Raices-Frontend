@@ -9,7 +9,7 @@ import Image from 'next/image';
 const Header2: React.FC = () => {
   const handleLogout = async () => {
     try {
-      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/login" || "http://localhost:3000/logout", {
+      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL+"/api/auth/logout " || "http://localhost:3000/logout", {
         method: "POST",
         credentials: "include", 
         headers: {
@@ -18,7 +18,7 @@ const Header2: React.FC = () => {
       });
 
       if (response.ok) {
-        window.location.href = "/login"; 
+        window.location.href = "/"; 
       } else {
         console.error("Error al cerrar sesión");
       }
