@@ -30,7 +30,7 @@ const LoginForm: React.FC = () => {
 
       console.log("Respuesta:", response);
 
-      router.push("/map");
+      router.push("/Plano");
     } catch (error) {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
       console.error("Error:", error);

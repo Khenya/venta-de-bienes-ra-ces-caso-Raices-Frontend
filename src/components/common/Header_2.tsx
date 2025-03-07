@@ -41,8 +41,8 @@ const Header2: React.FC = () => {
           </div>
 
           <div style={styles.linksContainer}>
-            <a href="/map" style={{ color: Colors.primary, marginRight: "15px" }}>Mapa</a>
-            <a href="/list" style={{ color: Colors.primary, marginRight: "15px" }}>Listado</a>
+            <a href="/Plano" style={{ color: Colors.primary, marginRight: "15px" }}>Plano</a>
+            <a href="/List" style={{ color: Colors.primary, marginRight: "15px" }}>Listado</a>
             <TbLogout 
               style={{ color: Colors.primary, marginRight: "15px", cursor: "pointer" }} 
               onClick={() => setIsModalOpen(true)}

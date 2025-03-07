@@ -1,16 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import List from "../pages/list";
-import Map from "../pages/map";
+import List from "../pages/List";
+import Plano from "../pages/Plano";
 import Login from "../pages/Login";
-import Edit from "../pages/edit";
+import Edit from "../pages/Edit";
 
 const AppRoutes = () => (
   <Router>
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/list/:token" element={<List />} />
-      <Route path="/map" element={<Map />} />
-      <Route path="/edit/:token" element={<Edit />} />
+      <Route path="/List/:token" element={<List />} />
+      <Route path="/Plano" element={<Plano />} />
+      <Route path="/Edit/:token" element={<Edit />} />
     </Routes>
   </Router>
 );
