@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
-import axios from "axios";
+import api from "../../utils/api";
 import InputField from "./InputField";
 
 const LoginForm: React.FC = () => {
@@ -15,25 +15,24 @@ const LoginForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/login" || "http://localhost:3000/api/auth/login";
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     try {
-      const response = await axios.post(
-        API_URL,
-        { username: usuario, password: contraseña },
-        { withCredentials: true }
-      );
-
-      console.log("Respuesta:", response);
-
-      router.push("/Plano");
+      const response = await api.post("/api/auth/login", {
+        username: usuario,
+        password: contraseña,
+      });
+  
+      if (!response.data || !response.data.token) {
+        throw new Error("No se recibió un token válido");
+      }
+  
+      localStorage.setItem("token", response.data.token);
+      window.location.href = "/Plano";
     } catch (error) {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
-      console.error("Error:", error);
     }
   };
 

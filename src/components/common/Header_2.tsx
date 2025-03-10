@@ -2,35 +2,14 @@
 
 import logo from "../../assetes/Logo.png";
 import { Colors } from "../../app/config/theme/Colors";
-
 import React, { useState } from "react";
 import { TbLogout } from "react-icons/tb";
 import Image from "next/image";
 import Modal from "./Modal"; 
+import { logout } from "../../utils/Logout";
 
 const Header2: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleLogout = async () => {
-    try {
-      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        localStorage.removeItem("token");
-        window.location.href = "/";
-      } else {
-        console.error("Error al cerrar sesión");
-      }
-    } catch (error) {
-      console.error("Error de red:", error);
-    }
-  };
 
   return (
     <>
@@ -60,7 +39,7 @@ const Header2: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={handleLogout}
+        onConfirm={logout}
         text="¿Seguro que quieres cerrar sesión?"
       />
     </>

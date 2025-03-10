@@ -1,9 +1,9 @@
 "use client";
-
+import withAuth from '../hoc/WithAuth';
 import Header2 from "@/components/common/Header_2";
 import { Colors } from "../app/config/theme/Colors"
 
-export default function Home() {
+const PlanoPage = () => {
   return (
     <div className="min-h-screen" style={{ backgroundColor: Colors.primary }}>
       <Header2/>
@@ -11,3 +11,4 @@ export default function Home() {
     </div>
   );
 }
+export default withAuth(PlanoPage);
