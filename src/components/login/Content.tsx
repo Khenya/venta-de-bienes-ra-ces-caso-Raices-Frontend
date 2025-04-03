@@ -2,7 +2,6 @@
 import { Colors } from "@/app/config/theme/Colors";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
@@ -13,7 +12,6 @@ const LoginForm: React.FC = () => {
   const [usuario, setUsuario] = useState("");
   const [contraseña, setContraseña] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
