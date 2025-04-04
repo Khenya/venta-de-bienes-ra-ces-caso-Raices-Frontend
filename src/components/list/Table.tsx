@@ -10,7 +10,17 @@ interface Property {
   price: number;
 }
 
-const Table = () => {
+interface TableProps {
+  currentPage: number;
+  itemsPerPage: number;
+  onTotalItemsChange: (total: number) => void;
+}
+
+const Table: React.FC<TableProps> = ({ 
+  currentPage, 
+  itemsPerPage,
+  onTotalItemsChange
+}) => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +37,7 @@ const Table = () => {
         headers.set("Authorization", `${token}`);
 
         const response = await fetch(
-          process.env.NEXT_PUBLIC_BACKEND_URL + "/api/protected/properties",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties`,
           {
             method: "GET",
             headers,
@@ -45,13 +55,19 @@ const Table = () => {
 
         const data: Property[] = await response.json();
         setProperties(data);
+        onTotalItemsChange(data.length);
       } catch (err) {
         setError((err as Error).message);
       }
     };
 
     fetchProperties();
-  }, []);
+  }, [onTotalItemsChange]);
+
+  // Calcular los items para la página actual
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = properties.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="w-full max-w-6xl bg-white rounded-lg shadow-md overflow-hidden">
@@ -72,9 +88,15 @@ const Table = () => {
               </tr>
             </thead>
             <tbody>
-              {properties.length > 0 ? (
-                properties.map((property) => (
-                  <TableRow key={property.property_id} property={property} />
+              {currentItems.length > 0 ? (
+                currentItems.map((property, index) => (
+                  <TableRow 
+                    key={property.property_id} 
+                    property={{
+                      ...property,
+                      property_id: indexOfFirstItem + index + 1
+                    }} 
+                  />
                 ))
               ) : (
                 <tr>
