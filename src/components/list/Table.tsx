@@ -54,51 +54,21 @@ const Table = () => {
   }, []);
 
   return (
-    <div className="w-full max-w-6xl bg-white p-6 rounded-lg shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">Listado de Inmuebles Nueva Esperanza</h1>
-        <div className="flex space-x-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Descargar
-          </button>
-        </div>
-      </div>
-
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex space-x-2">
-          <button className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">
-            Nuevo inmueble
-          </button>
-          <button className="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-300">
-            Más filtros
-          </button>
-        </div>
-        <p className="text-gray-600">Total consultas: {properties.length}</p>
-      </div>
-
+    <div className="w-full max-w-6xl bg-white rounded-lg shadow-md overflow-hidden">
       {error ? (
-        <p className="text-red-500 text-center">{error}</p>
+        <p className="text-red-500 text-center p-4">{error}</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left border-collapse">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+          <table className="w-full">
+            <thead className="bg-[#8C756A] text-white">
               <tr>
-                {[
-                  "N°",
-                  "MANZANO",
-                  "LOTE",
-                  "DUEÑO",
-                  "ESTADO DE PAGO",
-                  "PRECIO (DOLARES)",
-                  "ACCIONES",
-                ].map((header, index) => (
-                  <th
-                    key={index}
-                    className="px-4 py-3 border-b"
-                  >
-                    {header}
-                  </th>
-                ))}
+                <th className="px-4 py-3 text-center font-medium">N°</th>
+                <th className="px-4 py-3 text-center font-medium">MANZANO</th>
+                <th className="px-4 py-3 text-center font-medium">LOTE</th>
+                <th className="px-4 py-3 text-center font-medium">DUEÑO</th>
+                <th className="px-4 py-3 text-center font-medium">ESTADO DE PAGO</th>
+                <th className="px-4 py-3 text-center font-medium">PRECIO (DOLARES)</th>
+                <th className="px-4 py-3 text-center font-medium">ACCIONES</th>
               </tr>
             </thead>
             <tbody>
@@ -108,10 +78,7 @@ const Table = () => {
                 ))
               ) : (
                 <tr>
-                  <td
-                    colSpan={7}
-                    className="text-center py-4 text-gray-500"
-                  >
+                  <td colSpan={7} className="text-center py-4 text-gray-500">
                     No hay propiedades disponibles
                   </td>
                 </tr>
@@ -120,11 +87,6 @@ const Table = () => {
           </table>
         </div>
       )}
-
-      <div className="flex justify-center mt-4">
-        <button className="mx-2 px-4 py-2 border rounded hover:bg-gray-100">Anterior</button>
-        <button className="mx-2 px-4 py-2 border rounded hover:bg-gray-100">Siguiente</button>
-      </div>
     </div>
   );
 };
