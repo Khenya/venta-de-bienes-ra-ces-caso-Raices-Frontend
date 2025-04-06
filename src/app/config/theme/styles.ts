@@ -89,7 +89,7 @@ const styles: Record<string, CSSProperties> = {
     border: `1px solid ${Colors.text_color}`,
   },
   tableHeader: {
-    backgroundColor: Colors.brown,
+    backgroundColor: "#948C83",
     color: "#ffffff",
     borderBottom: `1px solid ${Colors.primary}`,
   },
@@ -101,6 +101,12 @@ const styles: Record<string, CSSProperties> = {
     border: `1px solid ${Colors.text_color}`,
     color: "#333",
   },
+  titel:{
+    fontSize: "20px", 
+    fontWeight: "bold", 
+    marginBottom: "20px",
+    color: Colors.text_color
+  }
 };
 
 export default styles;

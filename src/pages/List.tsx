@@ -1,6 +1,8 @@
 import Header2 from "@/components/common/Header_2";
 import Table from "@/components/list/Table";
 import styles from "@/app/config/theme/styles";
+import NewPropertyModal from "../components/list/NewPropertyModal";
+import { Colors } from "@/app/config/theme/Colors";
 
 import { CiFilter } from "react-icons/ci";
 import { RiDownloadLine } from "react-icons/ri";
@@ -10,8 +12,12 @@ const List = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 10;
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const handleSaveProperty = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="min-h-screen w-full bg-gray-50">
@@ -24,8 +30,8 @@ const List = () => {
         alignItems: "center"
       }}>
         <div className="w-full max-w-5xl bg-white p-8 rounded-lg shadow-lg">          
-          <div className="w-full text-center mb-6">
-            <h1 className="text-2xl font-bold mx-auto">
+          <div style={styles.buttonsContainer}>
+            <h1 style={{ color: Colors.brown}}>
               Listado de Inmuebles Nueva Esperanza
             </h1>
           </div>
@@ -37,7 +43,8 @@ const List = () => {
               </span>
             </button>
 
-            <button style={styles.cancelButton}>
+            <button style={styles.cancelButton}
+              onClick={() => setIsModalOpen(true)}>
               Nuevo inmueble
             </button>
 
@@ -78,6 +85,11 @@ const List = () => {
           </div>
         </div>
       </main>
+      <NewPropertyModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveProperty}
+      />
     </div>
   );
 };

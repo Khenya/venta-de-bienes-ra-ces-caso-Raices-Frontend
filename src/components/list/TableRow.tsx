@@ -6,7 +6,7 @@ interface Property {
   property_id: number;
   manzano: string;
   batch: string;
-  owner?: string;
+  owner_names?: string;
   state: string;
   price: number;
 }
@@ -24,7 +24,7 @@ const TableRow: React.FC<{ property: Property }> = ({ property }) => {
       <td  style={styles.tableCell}>{property.property_id}</td>
       <td  style={styles.tableCell}>{property.manzano}</td>
       <td  style={styles.tableCell}>{property.batch === "N/A" ? "N/A" : property.batch}</td>
-      <td  style={styles.tableCell}>{property.owner || "N/A"}</td>
+      <td  style={styles.tableCell}>{property.owner_names|| "N/A"}</td>
       <td  style={styles.tableCell}>
         <span className={`px-3 py-1 rounded-full text-xs ${
           property.state === "LIBRE" || property.state === "UBRE" 
