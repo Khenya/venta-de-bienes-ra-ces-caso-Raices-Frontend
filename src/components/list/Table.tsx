@@ -69,6 +69,7 @@ const Table: React.FC<TableProps> = ({
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = properties.slice(indexOfFirstItem, indexOfLastItem);
 
+ 
   return (
     <div className="w-full max-w-6xl bg-white rounded-lg shadow-md overflow-hidden">
       {error ? (

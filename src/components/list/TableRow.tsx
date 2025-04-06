@@ -19,21 +19,31 @@ const TableRow: React.FC<{ property: Property }> = ({ property }) => {
     }).format(price);
   };
 
+  const allOwners = [
+    "German Choque Ramos",
+    "Aydee Mercedes Choque de Alvarado",
+    "Nancy Lidia Choque Ramos",
+    "Jose Luis Choque Ramos",
+    "Javier Yason Choque Ramos"
+  ].sort().join(', ');
+
+  const checkAllOwners = (owners: string) => {
+    if (!owners) return false;
+    const ownerList = owners.split(', ').sort().join(', ');
+    return ownerList === allOwners;
+  };
+  
   return (
     <tr className="border-b hover:bg-gray-50">
       <td  style={styles.tableCell}>{property.property_id}</td>
       <td  style={styles.tableCell}>{property.manzano}</td>
-      <td  style={styles.tableCell}>{property.batch === "N/A" ? "N/A" : property.batch}</td>
-      <td  style={styles.tableCell}>{property.owner_names|| "N/A"}</td>
-      <td  style={styles.tableCell}>
-        <span className={`px-3 py-1 rounded-full text-xs ${
-          property.state === "LIBRE" || property.state === "UBRE" 
-            ? "bg-green-100 text-green-800" 
-            : "bg-red-100 text-red-800"
-        }`}>
-          {property.state}
-        </span>
+      <td  style={styles.tableCell}>{property.batch}</td>
+      <td style={styles.tableCell}>
+        {property.owner_names && checkAllOwners(property.owner_names) 
+          ? "TODOS" 
+          : property.owner_names || "N/A"}
       </td>
+      <td  style={styles.tableCell}>{property.state}</td>
       <td  style={styles.tableCell}>${formatPrice(property.price)}</td>
       <td  style={styles.tableCell}>
         <button className="text-blue-600 hover:text-blue-800 underline text-sm">
