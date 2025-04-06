@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import TableRow from "./TableRow";
 
+import TableRow from "./TableRow";
+import styles from "@/app/config/theme/styles";
 interface Property {
   property_id: number;
   manzano: string;
@@ -64,7 +65,6 @@ const Table: React.FC<TableProps> = ({
     fetchProperties();
   }, [onTotalItemsChange]);
 
-  // Calcular los items para la página actual
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = properties.slice(indexOfFirstItem, indexOfLastItem);
@@ -75,16 +75,16 @@ const Table: React.FC<TableProps> = ({
         <p className="text-red-500 text-center p-4">{error}</p>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table style={styles.table}>
             <thead className="bg-[#8C756A] text-white">
-              <tr>
-                <th className="px-4 py-3 text-center font-medium">N°</th>
-                <th className="px-4 py-3 text-center font-medium">MANZANO</th>
-                <th className="px-4 py-3 text-center font-medium">LOTE</th>
-                <th className="px-4 py-3 text-center font-medium">DUEÑO</th>
-                <th className="px-4 py-3 text-center font-medium">ESTADO DE PAGO</th>
-                <th className="px-4 py-3 text-center font-medium">PRECIO (DOLARES)</th>
-                <th className="px-4 py-3 text-center font-medium">ACCIONES</th>
+            <tr style={styles.tableHeader}>
+                <th  style={styles.tableCell}>N°</th>
+                <th style={styles.tableCell}>MANZANO</th>
+                <th style={styles.tableCell}>LOTE</th>
+                <th style={styles.tableCell}>DUEÑO</th>
+                <th style={styles.tableCell}>ESTADO DE PAGO</th>
+                <th style={styles.tableCell}>PRECIO (DOLARES)</th>
+                <th style={styles.tableCell}>ACCIONES</th>
               </tr>
             </thead>
             <tbody>

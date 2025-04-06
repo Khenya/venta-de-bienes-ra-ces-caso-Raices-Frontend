@@ -1,5 +1,9 @@
 import Header2 from "@/components/common/Header_2";
 import Table from "@/components/list/Table";
+import styles from "@/app/config/theme/styles";
+
+import { CiFilter } from "react-icons/ci";
+import { RiDownloadLine } from "react-icons/ri";
 import { useState } from "react";
 
 const List = () => {
@@ -25,16 +29,23 @@ const List = () => {
               Listado de Inmuebles Nueva Esperanza
             </h1>
           </div>
-          
-          <div className="flex justify-center gap-4 mb-6">
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-              Descargar
+          <div style={styles.buttonsContainer}>
+            <button style={styles.confirmButton}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <RiDownloadLine className="text-lg" />
+                Descargar
+              </span>
             </button>
-            <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+
+            <button style={styles.cancelButton}>
               Nuevo inmueble
             </button>
-            <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">
-              Más filtros
+
+            <button style={styles.cancelButton}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CiFilter className="text-lg" />
+                Más filtros
+              </span>
             </button>
           </div>
           
@@ -44,27 +55,21 @@ const List = () => {
             onTotalItemsChange={setTotalItems}
           />
 
-          <div className="flex justify-center mt-6 gap-4">
-            <button 
-              className={`px-4 py-2 border rounded ${
-                currentPage === 1 
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
-                  : "hover:bg-gray-100"
-              }`}
+          <div style={styles.buttonsContainerNext}>
+            <button
+              style={currentPage === 1 ? styles.paginationButtonDisabled : styles.paginationButton}
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
             >
               Anterior
             </button>
-            <span className="flex items-center px-4">
+
+            <span style={styles.paginationCurrent}>
               {currentPage} / {totalPages}
             </span>
-            <button 
-              className={`px-4 py-2 border rounded ${
-                currentPage >= totalPages 
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
-                  : "hover:bg-gray-100"
-              }`}
+
+            <button
+              style={currentPage >= totalPages ? styles.paginationButtonDisabled : styles.paginationButton}
               onClick={() => setCurrentPage(prev => prev + 1)}
               disabled={currentPage >= totalPages}
             >

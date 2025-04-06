@@ -1,3 +1,5 @@
+import styles from "@/app/config/theme/styles";
+
 import React from "react";
 
 interface Property {
@@ -19,11 +21,11 @@ const TableRow: React.FC<{ property: Property }> = ({ property }) => {
 
   return (
     <tr className="border-b hover:bg-gray-50">
-      <td className="px-4 py-3 text-center">{property.property_id}</td>
-      <td className="px-4 py-3 text-center">{property.manzano}</td>
-      <td className="px-4 py-3 text-center">{property.batch === "N/A" ? "N/A" : property.batch}</td>
-      <td className="px-4 py-3 text-center">{property.owner || "N/A"}</td>
-      <td className="px-4 py-3 text-center">
+      <td  style={styles.tableCell}>{property.property_id}</td>
+      <td  style={styles.tableCell}>{property.manzano}</td>
+      <td  style={styles.tableCell}>{property.batch === "N/A" ? "N/A" : property.batch}</td>
+      <td  style={styles.tableCell}>{property.owner || "N/A"}</td>
+      <td  style={styles.tableCell}>
         <span className={`px-3 py-1 rounded-full text-xs ${
           property.state === "LIBRE" || property.state === "UBRE" 
             ? "bg-green-100 text-green-800" 
@@ -32,8 +34,8 @@ const TableRow: React.FC<{ property: Property }> = ({ property }) => {
           {property.state}
         </span>
       </td>
-      <td className="px-4 py-3 text-center font-medium">${formatPrice(property.price)}</td>
-      <td className="px-4 py-3 text-center">
+      <td  style={styles.tableCell}>${formatPrice(property.price)}</td>
+      <td  style={styles.tableCell}>
         <button className="text-blue-600 hover:text-blue-800 underline text-sm">
           Detalle
         </button>
