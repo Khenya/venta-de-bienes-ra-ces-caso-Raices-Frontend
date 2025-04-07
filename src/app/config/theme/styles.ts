@@ -6,7 +6,8 @@ const styles: Record<string, CSSProperties> = {
     display: 'flex',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    marginBottom: '1.5rem',
+    marginTop: '40PX',
+    marginBottom: '40PX',
   },
   confirmButton: {
     padding: '10px 20px',
@@ -37,13 +38,14 @@ const styles: Record<string, CSSProperties> = {
   },
   modal: {
     backgroundColor: "#fff",
-    padding: "20px",
     borderRadius: "8px",
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-    maxWidth: "400px",
+    maxWidth: "600px",
     width: "100%",
-    textAlign: "center",
+    textAlign: "left",
     position: "relative",
+    maxHeight: "72vh",
+    overflowY: "auto", 
   },
   closeIcon: {
     position: "absolute",
@@ -106,7 +108,30 @@ const styles: Record<string, CSSProperties> = {
     fontWeight: "bold", 
     marginBottom: "20px",
     color: Colors.text_color
-  }
+  },
+  formGroup: {
+    margin: '20px',
+    textAlign: 'left',
+  },
+  
+  formLabel: {
+    fontWeight: '500',
+    marginBottom: '8px',
+    display: Colors.text_color,
+    color: Colors.text_color,
+  },
+  
+  formInput: {
+    width: '100%',
+    padding: '10px 12px',
+    border: `1px solid ${Colors.text_color}`,
+    borderRadius: '4px',
+    fontSize: '14px',
+    outline: 'none',
+    color: '#333',
+    lineHeight: "1.2"
+  },
+  
 };
 
 export default styles;

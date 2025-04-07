@@ -40,10 +40,14 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
           <div style={styles.formGroup}>
             <label style={styles.formLabel}>NOMBRE DEL PROPIETARIO*</label>
           </div>
-          <input 
-            type="text" 
-            style={styles.formInput} 
-          />
+          <select style={styles.formInput}>
+            <option>TODOS</option>
+            <option>German Choque Ramos</option>
+            <option>Aydee Mercedes Choque de Alvarado</option>
+            <option>Nancy Lidia Choque Ramos</option>
+            <option>Jose Luis Choque Ramos</option>
+            <option>Javier Yason Choque Ramos</option>
+          </select>
 
           <div style={styles.formGroup}>
             <label style={styles.formLabel}>LOTE*</label>
