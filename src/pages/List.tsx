@@ -2,6 +2,7 @@ import Header2 from "@/components/common/Header_2";
 import Table from "@/components/list/Table";
 import styles from "@/app/config/theme/styles";
 import NewPropertyModal from "../components/list/NewPropertyModal";
+import ModalFilter from "../components/list/ModalFilter";
 import { Colors } from "@/app/config/theme/Colors";
 
 import { CiFilter } from "react-icons/ci";
@@ -12,11 +13,15 @@ const List = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 10;
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isNewPropertyModalOpen, setIsNewPropertyModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handleSaveProperty = () => {
-    setIsModalOpen(false);
+    setIsNewPropertyModalOpen(false);
+  };
+
+  const handleApplyFilters = () => {
   };
 
   return (
@@ -43,12 +48,17 @@ const List = () => {
               </span>
             </button>
 
-            <button style={styles.cancelButton}
-              onClick={() => setIsModalOpen(true)}>
+            <button 
+              style={styles.cancelButton}
+              onClick={() => setIsNewPropertyModalOpen(true)}
+            >
               Nuevo inmueble
             </button>
 
-            <button style={styles.cancelButton}>
+            <button 
+              style={styles.cancelButton}
+              onClick={() => setIsFilterModalOpen(true)}
+            >
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <CiFilter className="text-lg" />
                 Más filtros
@@ -85,9 +95,15 @@ const List = () => {
           </div>
         </div>
       </main>
+      
       <NewPropertyModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isNewPropertyModalOpen}
+        onClose={() => setIsNewPropertyModalOpen(false)}
+        onSave={handleSaveProperty}
+      />
+      <ModalFilter 
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
         onSave={handleSaveProperty}
       />
     </div>
