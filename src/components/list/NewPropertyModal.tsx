@@ -207,17 +207,17 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
           </div>
 
           <div style={styles.buttonsContainer}>
-          <button 
-            type="submit"
-            style={{
-              ...styles.confirmButton,
-              opacity: isFormValid() ? 1 : 0.5,
-              cursor: isFormValid() ? "pointer" : "not-allowed"
-            }}
-            disabled={!isFormValid()}
-          >
-            Guardar
-          </button>
+            <button 
+              type="submit"
+              style={{
+                ...styles.confirmButton,
+                opacity: isFormValid() ? 1 : 0.5,
+                cursor: isFormValid() ? "pointer" : "not-allowed"
+              }}
+              disabled={!isFormValid()}
+            >
+              Guardar
+            </button>
           </div>
         </form>
       </div>
