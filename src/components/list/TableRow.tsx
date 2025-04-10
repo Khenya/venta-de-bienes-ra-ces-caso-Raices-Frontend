@@ -32,7 +32,7 @@ const TableRow: React.FC<{ property: Property }> = ({ property }) => {
     const ownerList = owners.split(', ').sort().join(', ');
     return ownerList === allOwners;
   };
-  
+
   return (
     <tr className="border-b hover:bg-gray-50">
       <td  style={styles.tableCell}>{property.property_id}</td>
@@ -46,9 +46,12 @@ const TableRow: React.FC<{ property: Property }> = ({ property }) => {
       <td  style={styles.tableCell}>{property.state}</td>
       <td  style={styles.tableCell}>${formatPrice(property.price)}</td>
       <td  style={styles.tableCell}>
-        <button className="text-blue-600 hover:text-blue-800 underline text-sm">
-          Detalle
-        </button>
+         <a 
+            href="/PropertyPage" 
+            className="text-blue-600 hover:text-blue-800 underline text-sm"
+          >
+            Detalle
+          </a>
       </td>
     </tr>
   );
