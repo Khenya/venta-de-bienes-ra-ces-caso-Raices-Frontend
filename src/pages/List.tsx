@@ -21,8 +21,6 @@ const List = () => {
     setIsNewPropertyModalOpen(false);
   };
 
-  const handleApplyFilters = () => {
-  };
 
   return (
     <div className="min-h-screen w-full bg-gray-50">
