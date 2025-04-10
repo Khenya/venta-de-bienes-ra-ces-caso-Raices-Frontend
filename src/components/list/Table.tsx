@@ -43,6 +43,9 @@ const Table: React.FC<TableProps> = ({
             case "DUEÑO":
               url += `?owner=${encodeURIComponent(value)}`;
               break;
+            case "ESTADO":
+              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/state/${value}`;
+              break;
             case "PRECIO":
               url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/price/${value}`;
               break;

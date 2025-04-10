@@ -22,6 +22,8 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
   useEffect(() => {
     if (selectedField === "DUEÑO") {
       setIsFormValid(ownerOption.trim() !== "");
+    } else if (selectedField === "ESTADO") {
+      setIsFormValid(ownerOption.trim() !== "");
     } else {
       setIsFormValid(textValue.trim() !== "");
     }
@@ -51,12 +53,31 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
               }}
             >
               <option value="DUEÑO">DUEÑO</option>
+              <option value="ESTADO">ESTADO</option>
               <option value="PRECIO">PRECIO (DOLARES)</option>
               <option value="MANZANO">MANZANO</option>
               <option value="LOTE">LOTE</option>
             </select>
           </div>
 
+          {selectedField === "ESTADO" && (
+            <div style={styles.formGroup}>
+              <label style={styles.formLabel}>Seleccione un estado:</label>
+              <select
+                style={styles.formInput}
+                value={ownerOption}
+                onChange={(e) => setOwnerOption(e.target.value)}
+              >
+                <option value="LIBRE">LIBRE</option>
+                <option value="CANCELADO">CANCELADO</option>
+                <option value="RESERVADO">RESERVADO</option>
+                <option value="RETRASADO">RETRASADO</option>
+                <option value="PAGANDO">PAGANDO</option>
+                <option value="CADUCADO">CADUCADO</option>
+              </select>
+            </div>
+          )}
+          
           {selectedField === "DUEÑO" && (
             <div style={styles.formGroup}>
               <label style={styles.formLabel}>Seleccione un dueño:</label>
