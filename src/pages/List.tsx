@@ -17,6 +17,8 @@ const List = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+  const [filter, setFilter] = useState<{ field: string; value: string } | null>(null);
+
   const handleSaveProperty = () => {
     setIsNewPropertyModalOpen(false);
   };
@@ -68,6 +70,7 @@ const List = () => {
             currentPage={currentPage} 
             itemsPerPage={itemsPerPage}
             onTotalItemsChange={setTotalItems}
+            filter={filter}
           />
 
           <div style={styles.buttonsContainerNext}>
@@ -103,6 +106,7 @@ const List = () => {
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
         onSave={handleSaveProperty}
+        onApplyFilter={setFilter}
       />
     </div>
   );

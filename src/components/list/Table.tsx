@@ -15,12 +15,14 @@ interface TableProps {
   currentPage: number;
   itemsPerPage: number;
   onTotalItemsChange: (total: number) => void;
+  filter: { field: string; value: string } | null;
 }
 
 const Table: React.FC<TableProps> = ({ 
   currentPage, 
   itemsPerPage,
-  onTotalItemsChange
+  onTotalItemsChange,
+  filter
 }) => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -32,20 +34,36 @@ const Table: React.FC<TableProps> = ({
         setError("No hay token disponible. Inicia sesión.");
         return;
       }
-
+  
       try {
-        const headers = new Headers();
-        headers.set("Authorization", `${token}`);
-
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties`,
-          {
-            method: "GET",
-            headers,
-            credentials: "include",
+        let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties`;
+        if (filter) {
+          const { field, value } = filter;
+          switch (field) {
+            case "DUEÑO":
+              url += `?owner=${encodeURIComponent(value)}`;
+              break;
+            case "PRECIO":
+              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/price/${value}`;
+              break;
+            case "MANZANO":
+              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/manzano/${value}`;
+              break;
+            case "LOTE":
+              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/batch/${value}`;
+              break;
           }
-        );
-
+        }
+  
+        const headers = new Headers();
+        headers.set("Authorization", token);
+  
+        const response = await fetch(url, {
+          method: "GET",
+          headers,
+          credentials: "include",
+        });
+  
         if (!response.ok) {
           throw new Error(
             response.status === 401
@@ -53,7 +71,7 @@ const Table: React.FC<TableProps> = ({
               : "Error al obtener las propiedades."
           );
         }
-
+  
         const data: Property[] = await response.json();
         setProperties(data);
         onTotalItemsChange(data.length);
@@ -61,9 +79,9 @@ const Table: React.FC<TableProps> = ({
         setError((err as Error).message);
       }
     };
-
+  
     fetchProperties();
-  }, [onTotalItemsChange]);
+  }, [filter, onTotalItemsChange]); 
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

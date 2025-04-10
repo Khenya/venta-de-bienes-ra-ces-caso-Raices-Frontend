@@ -10,9 +10,10 @@ interface ModalFilterProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
+  onApplyFilter: (filter: { field: string; value: string }) => void;
 }
 
-const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave }) => {
+const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onApplyFilter }) => {
   const [selectedField, setSelectedField] = useState<string>("DUEÑO");
   const [ownerOption, setOwnerOption] = useState<string>("TODOS");
   const [textValue, setTextValue] = useState<string>("");
@@ -87,20 +88,22 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave }) =>
           )}
 
           <div style={styles.buttonsContainer}>
-            <button onClick={onClose} style={styles.cancelButton}>
-              Cancelar
-            </button>
-            <button
-              onClick={onSave}
-              style={{
-                ...styles.confirmButton,
-                opacity: isFormValid ? 1 : 0.5,
-                cursor: isFormValid ? 'pointer' : 'not-allowed'
-              }}
-              disabled={!isFormValid}
-            >
-              Guardar
-            </button>
+          <button
+            onClick={() => {
+              const filterValue = selectedField === "DUEÑO" ? ownerOption : textValue;
+              onApplyFilter({ field: selectedField, value: filterValue });
+              onSave();
+              onClose();
+            }}
+            style={{
+              ...styles.confirmButton,
+              opacity: isFormValid ? 1 : 0.5,
+              cursor: isFormValid ? "pointer" : "not-allowed"
+            }}
+            disabled={!isFormValid}
+          >
+            Guardar
+          </button>
           </div>
         </div>
       </div>
