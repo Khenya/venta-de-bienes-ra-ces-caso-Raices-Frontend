@@ -26,6 +26,17 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
   const [testimonyNumber, setTestimonyNumber] = useState<number | "">("");
   const [isClient, setIsClient] = useState(false);
 
+  const isFormValid = () => {
+    return (
+      ownerName.trim() !== "" &&
+      batch !== "" &&
+      manzano !== "" &&
+      location.trim() !== "" &&
+      meters !== "" &&
+      price !== ""
+    );
+  };
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -196,19 +207,17 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
           </div>
 
           <div style={styles.buttonsContainer}>
-            <button 
-              type="button"
-              onClick={onClose} 
-              style={styles.cancelButton}
-            >
-              Cancelar
-            </button>
-            <button 
-              type="submit"
-              style={styles.confirmButton}
-            >
-              Guardar
-            </button>
+          <button 
+            type="submit"
+            style={{
+              ...styles.confirmButton,
+              opacity: isFormValid() ? 1 : 0.5,
+              cursor: isFormValid() ? "pointer" : "not-allowed"
+            }}
+            disabled={!isFormValid()}
+          >
+            Guardar
+          </button>
           </div>
         </form>
       </div>
