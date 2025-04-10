@@ -55,9 +55,10 @@ const Table: React.FC<TableProps> = ({
             case "LOTE":
               url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/batch/${value}`;
               break;
+            default:
+              break;
           }
         }
-  
         const headers = new Headers();
         headers.set("Authorization", token);
   

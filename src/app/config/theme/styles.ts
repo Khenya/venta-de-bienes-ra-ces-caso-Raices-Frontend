@@ -16,14 +16,14 @@ const styles: Record<string, CSSProperties> = {
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-  },cancelButton: {
+  },
+  cancelButton: {
     padding: '10px 20px',
     color: '#000',
     border: `1px solid ${Colors.text_color}`, 
     borderRadius: '4px',
     cursor: 'pointer',
   },
-  
   overlay: {
     position: "fixed",
     top: 0,
@@ -91,8 +91,7 @@ const styles: Record<string, CSSProperties> = {
     border: `1px solid ${Colors.text_color}`,
   },
   tableHeader: {
-    backgroundColor: "#948C83",
-    color: "#ffffff",
+    backgroundColor: "#ccc",
     borderBottom: `1px solid ${Colors.primary}`,
   },
   tableRow: {

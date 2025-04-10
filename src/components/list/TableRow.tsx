@@ -1,4 +1,5 @@
 import styles from "@/app/config/theme/styles";
+import { Colors } from "@/app/config/theme/Colors";
 
 import React from "react";
 
@@ -48,7 +49,11 @@ const TableRow: React.FC<{ property: Property }> = ({ property }) => {
       <td  style={styles.tableCell}>
          <a 
             href="/PropertyPage" 
-            className="text-blue-600 hover:text-blue-800 underline text-sm"
+            style={{ 
+              color: Colors.text_color, 
+              marginRight: "15px",
+              textDecoration: "none"
+            }}
           >
             Detalle
           </a>

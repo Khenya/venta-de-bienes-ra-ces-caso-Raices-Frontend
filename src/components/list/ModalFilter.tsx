@@ -111,7 +111,10 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
           <div style={styles.buttonsContainer}>
           <button
             onClick={() => {
-              const filterValue = selectedField === "DUEÑO" ? ownerOption : textValue;
+              const filterValue =
+                selectedField === "DUEÑO" || selectedField === "ESTADO"
+                  ? ownerOption
+                  : textValue;
               onApplyFilter({ field: selectedField, value: filterValue });
               onSave();
               onClose();
