@@ -38,7 +38,7 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
           <RxCross2 style={{ color: Colors.text_color, fontSize: "24px", cursor: "pointer" }} />
         </div>
 
-        <h1 style={styles.titel}>Más Filtros</h1>
+        <h1 style={styles.titel}>Filtros</h1>
 
         <div>
           <div style={styles.formGroup}>
