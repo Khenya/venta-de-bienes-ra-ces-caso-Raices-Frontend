@@ -7,13 +7,13 @@ import axios from "axios";
 import { Colors } from "@/app/config/theme/Colors";
 import styles from "@/app/config/theme/styles";
 
-interface NewPropertyModalProps {
+interface EditPropertyModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
 }
 
-const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, onSave }) => {
+const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, onSave }) => {
   const [state, setState] = useState("LIBRE");
   const [price, setPrice] = useState<number | "">("");
   const [isClient, setIsClient] = useState(false);
@@ -106,4 +106,4 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
   );
 };
 
-export default NewPropertyModal;
+export default EditPropertyModal;

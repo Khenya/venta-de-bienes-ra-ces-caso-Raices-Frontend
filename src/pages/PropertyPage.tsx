@@ -9,10 +9,12 @@ import ObservationsCard from '@/components/details/ObservationsCard';
 import styles from '../app/config/theme/PropertyHeader.module.css';
 import { useState } from 'react';
 import EditPrperty from '@/components/details/EditPropertyModal';
+import NewCustomerModal from "@/components/details/NewCustomerModal";
 
 const PropertyPage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
-
+  const [showCustomerModal, setShowCustomerModal] = useState(false);
+  
   return (
     <div className="min-h-screen">
       <Header2 />
@@ -31,12 +33,19 @@ const PropertyPage = () => {
 
           <div className={styles.cardGrid}>
             <PropertyCard onEditClick={() => setShowEditModal(true)} />
-            <AdjudicatorCard />
+            <AdjudicatorCard onAddClick={() => setShowCustomerModal(true)} />
             <ObservationsCard />
           </div>
         </div>
       </main>
 
+      <NewCustomerModal
+        isOpen={showCustomerModal}
+        onClose={() => setShowCustomerModal(false)}
+        onSave={() => {
+          setShowCustomerModal(false);
+        }}
+      />
       <EditPrperty
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
