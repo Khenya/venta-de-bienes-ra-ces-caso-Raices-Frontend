@@ -22,3 +22,13 @@
   font-weight: 500;
   color: #333;
 }
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333;
+  padding-top: 24px;
+}

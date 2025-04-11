@@ -1,10 +1,10 @@
-import styles from '../../app/config/theme/PropertyCard.module.css';
+import styles from '../../app/config/theme/Card.module.css';
 import { Colors } from "@/app/config/theme/Colors";
 
 import { MdModeEditOutline } from "react-icons/md";
 
 const PropertyCard = () => (
-  <div className={styles.propertyCard}>
+  <div className={styles.card}>
     <div className={styles.propertyCardHeader}>
       <span className={styles.propertyCardTitle}>Detalles del lote</span>
       <button className={styles.propertyCardEditBtn}>

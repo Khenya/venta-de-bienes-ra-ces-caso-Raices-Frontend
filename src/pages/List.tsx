@@ -61,7 +61,7 @@ const List = () => {
             >
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <CiFilter className="text-lg" />
-                Más filtros
+                Filtros
               </span>
             </button>
           </div>
