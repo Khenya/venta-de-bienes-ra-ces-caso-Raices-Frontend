@@ -13,9 +13,13 @@ interface NewPropertyModalProps {
   onSave: () => void;
 }
 
+interface Owner {
+  fullName: string;
+  displayName: string;
+}
+
 const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, onSave }) => {
   const [state, setState] = useState("LIBRE");
-  const [ownerName, setOwnerName] = useState("");
   const [batch, setBatch] = useState<number | "">("");
   const [manzano, setManzano] = useState<number | "">("");
   const [location, setLocation] = useState("");
@@ -25,10 +29,18 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
   const [propertyNumber, setPropertyNumber] = useState<number | "">("");
   const [testimonyNumber, setTestimonyNumber] = useState<number | "">("");
   const [isClient, setIsClient] = useState(false);
+  const [owners, setOwners] = useState<Owner[]>([
+    { fullName: "German Choque Ramos", displayName: "German Choque" },
+    { fullName: "Aydee Mercedes Choque de Alvarado", displayName: "Aydee Choque" },
+    { fullName: "Nancy Lidia Choque Ramos", displayName: "Nancy Choque" },
+    { fullName: "Jose Luis Choque Ramos", displayName: "Jose Choque" },
+    { fullName: "Javier Yason Choque Ramos", displayName: "Javier Choque" }
+  ]);
+  const [selectedOwner, setSelectedOwner] = useState("");
 
   const isFormValid = () => {
     return (
-      ownerName.trim() !== "" &&
+      selectedOwner !== "" &&
       batch !== "" &&
       manzano !== "" &&
       location.trim() !== "" &&
@@ -43,27 +55,30 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
-    if (!ownerName.trim()) return;
-
+  
+    if (!selectedOwner || !batch || !manzano || !location || !meters || !price) {
+      console.error("Faltan campos obligatorios");
+      return;
+    }
+  
     const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
     if (!token) return;
-
+  
     const requestData = {
       state,
-      owner_name: ownerName,
-      batch: batch !== "" ? Number(batch) : null,
-      manzano: manzano !== "" ? Number(manzano) : null,
+      owner_name: selectedOwner, 
+      batch: Number(batch),
+      manzano: Number(manzano),
       location,
-      meters: meters !== "" ? Number(meters) : null,
-      price: price !== "" ? Number(price) : null,
+      meters: Number(meters),
+      price: Number(price),
       folio_number: folioNumber !== "" ? Number(folioNumber) : null,
       property_number: propertyNumber !== "" ? Number(propertyNumber) : null,
       testimony_number: testimonyNumber !== "" ? Number(testimonyNumber) : null,
     };
-
+  
     try {
-      await axios.post(
+      const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property`,
         requestData,
         {
@@ -77,7 +92,11 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
       onSave();
       onClose();
     } catch (error: any) {
-      console.error("Error:", error.response?.data);
+      console.error("Error al crear propiedad:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
     }
   };
 
@@ -111,15 +130,21 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
           </div>
 
           <div style={styles.formGroup}>
-            <label style={styles.formLabel}>NOMBRE DEL PROPIETARIO*</label>
-            <input
-              type="text"
-              style={styles.formInput}
-              value={ownerName}
-              onChange={(e) => setOwnerName(e.target.value)}
-              required
-            />
-          </div>
+          <label style={styles.formLabel}>PROPIETARIO*</label>
+          <select
+            style={styles.formInput}
+            value={selectedOwner}
+            onChange={(e) => setSelectedOwner(e.target.value)}
+            required
+          >
+            <option value="">Seleccione un propietario</option>
+            {owners.map((owner) => (
+              <option key={owner.fullName} value={owner.fullName}>
+                {owner.displayName}
+              </option>
+            ))}
+          </select>
+        </div>
 
           <div style={styles.formGroup}>
             <label style={styles.formLabel}>LOTE*</label>
