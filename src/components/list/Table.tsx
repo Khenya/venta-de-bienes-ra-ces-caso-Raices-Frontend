@@ -115,10 +115,7 @@ const Table: React.FC<TableProps> = ({
                 currentItems.map((property, index) => (
                   <TableRow 
                     key={property.property_id} 
-                    property={{
-                      ...property,
-                      property_id: indexOfFirstItem + index + 1
-                    }} 
+                    property={property}
                   />
                 ))
               ) : (

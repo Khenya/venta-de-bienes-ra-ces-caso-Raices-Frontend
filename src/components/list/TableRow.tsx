@@ -2,6 +2,7 @@ import styles from "@/app/config/theme/styles";
 import { Colors } from "@/app/config/theme/Colors";
 
 import React from "react";
+import Link from "next/link";
 
 interface Property {
   property_id: number;
@@ -47,16 +48,16 @@ const TableRow: React.FC<{ property: Property }> = ({ property }) => {
       <td  style={styles.tableCell}>{property.state}</td>
       <td  style={styles.tableCell}>${formatPrice(property.price)}</td>
       <td  style={styles.tableCell}>
-         <a 
-            href="/PropertyPage" 
-            style={{ 
-              color: Colors.text_color, 
-              marginRight: "15px",
-              textDecoration: "none"
-            }}
-          >
-            Detalle
-          </a>
+        <Link 
+          href={`/PropertyPage?id=${property.property_id}`}
+          style={{ 
+            color: Colors.text_color, 
+            marginRight: "15px",
+            textDecoration: "none"
+          }}
+        >
+          Detalle
+        </ Link>
       </td>
     </tr>
   );
