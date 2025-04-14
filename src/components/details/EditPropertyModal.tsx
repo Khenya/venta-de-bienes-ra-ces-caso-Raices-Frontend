@@ -11,9 +11,10 @@ interface EditPropertyModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
+  propertyId: number;
 }
 
-const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, onSave }) => {
+const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, onSave, propertyId }) => {
   const [state, setState] = useState("LIBRE");
   const [price, setPrice] = useState<number | "">("");
   const [isClient, setIsClient] = useState(false);
@@ -35,16 +36,16 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, 
 
     try {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property/${propertyId}`,
         requestData,
         {
-          headers: { 
+          headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
           },
           withCredentials: true,
         }
-      );
+      );    
       onSave();
       onClose();
     } catch (error: any) {
