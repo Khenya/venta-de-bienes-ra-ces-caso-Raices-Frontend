@@ -76,13 +76,18 @@ const PropertyPage = () => {
 
           <div className={styles.cardGrid}>
             {property && (
-              <PropertyCard 
-                onEditClick={() => setShowEditModal(true)} 
-                property={property} 
-              />
+              <>
+                <PropertyCard 
+                  onEditClick={() => setShowEditModal(true)} 
+                  property={property} 
+                />
+                <AdjudicatorCard onAddClick={() => setShowCustomerModal(true)} />
+                <ObservationsCard 
+                  observations={property.observations} 
+                  propertyId={property.property_id} 
+                />
+              </>
             )}
-            <AdjudicatorCard onAddClick={() => setShowCustomerModal(true)} />
-            {property && <ObservationsCard observations={property.observations} />}
           </div>
         </div>
       </main>
