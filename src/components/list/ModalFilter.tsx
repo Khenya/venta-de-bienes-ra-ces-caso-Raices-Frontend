@@ -18,16 +18,17 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
   const [ownerOption, setOwnerOption] = useState<string>("TODOS");
   const [textValue, setTextValue] = useState<string>("");
   const [isFormValid, setIsFormValid] = useState(false);
+  const [stateOption, setStateOption] = useState<string>("LIBRE");
 
   useEffect(() => {
     if (selectedField === "DUEÑO") {
       setIsFormValid(ownerOption.trim() !== "");
     } else if (selectedField === "ESTADO") {
-      setIsFormValid(ownerOption.trim() !== "");
+      setIsFormValid(stateOption.trim() !== "");
     } else {
       setIsFormValid(textValue.trim() !== "");
     }
-  }, [selectedField, ownerOption, textValue]);
+  }, [selectedField, ownerOption, stateOption, textValue]);
 
   if (!isOpen) return null;
 
@@ -65,8 +66,8 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
               <label style={styles.formLabel}>Seleccione un estado:</label>
               <select
                 style={styles.formInput}
-                value={ownerOption}
-                onChange={(e) => setOwnerOption(e.target.value)}
+                value={stateOption}
+                onChange={(e) => setStateOption(e.target.value)}
               >
                 <option value="LIBRE">LIBRE</option>
                 <option value="CANCELADO">CANCELADO</option>
@@ -109,25 +110,27 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
           )}
 
           <div style={styles.buttonsContainer}>
-          <button
-            onClick={() => {
-              const filterValue =
-                selectedField === "DUEÑO" || selectedField === "ESTADO"
+            <button
+              onClick={() => {
+                const filterValue = selectedField === "DUEÑO" 
                   ? ownerOption
+                  : selectedField === "ESTADO"
+                  ? stateOption  
                   : textValue;
-              onApplyFilter({ field: selectedField, value: filterValue });
-              onSave();
-              onClose();
-            }}
-            style={{
-              ...styles.confirmButton,
-              opacity: isFormValid ? 1 : 0.5,
-              cursor: isFormValid ? "pointer" : "not-allowed"
-            }}
-            disabled={!isFormValid}
-          >
-            Guardar
-          </button>
+                
+                onApplyFilter({ field: selectedField, value: filterValue });
+                onSave();
+                onClose();
+              }}
+              style={{
+                ...styles.confirmButton,
+                opacity: isFormValid ? 1 : 0.5,
+                cursor: isFormValid ? "pointer" : "not-allowed"
+              }}
+              disabled={!isFormValid}
+            >
+              Guardar
+            </button>
           </div>
         </div>
       </div>
