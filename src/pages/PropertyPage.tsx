@@ -1,4 +1,3 @@
-"use client";
 import withAuth from '../hoc/WithAuth';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from "next/navigation";
@@ -39,7 +38,18 @@ const PropertyPage = () => {
 
         if (!res.ok) throw new Error("No se pudo obtener la propiedad");
         const data = await res.json();
-        setProperty(data);
+        const combinedObservations =
+          data.observations && data.observation_dates
+            ? [{
+                note: data.observations,
+                date: data.observation_dates
+              }]
+            : [];
+
+        setProperty({
+          ...data,
+          observations: combinedObservations
+        });
       } catch (err: any) {
         setError(err.message);
       }
@@ -47,7 +57,7 @@ const PropertyPage = () => {
 
     fetchProperty();
   }, [id]);
-  
+
   return (
     <div className="min-h-screen">
       <Header2 />
@@ -72,7 +82,7 @@ const PropertyPage = () => {
               />
             )}
             <AdjudicatorCard onAddClick={() => setShowCustomerModal(true)} />
-            <ObservationsCard />
+            {property && <ObservationsCard observations={property.observations} />}
           </div>
         </div>
       </main>
@@ -84,13 +94,14 @@ const PropertyPage = () => {
           setShowCustomerModal(false);
         }}
       />
-      <EditPrperty
-        isOpen={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        onSave={() => {
-          setShowEditModal(false);
-        }}
-      />
+      {property && (
+        <EditPrperty
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onSave={() => setShowEditModal(false)}
+          propertyId={property.property_id}
+        />
+      )}
     </div>
   );
 };
