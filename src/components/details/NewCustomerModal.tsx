@@ -11,9 +11,15 @@ interface NewCustomerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
+  propertyId: number; 
 }
 
-const NewCustomerModal: React.FC<NewCustomerModalProps> = ({ isOpen, onClose, onSave }) => {
+const NewCustomerModal: React.FC<NewCustomerModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  onSave,
+  propertyId 
+}) => {
   const [name, setName] = useState<string>("");
   const [ci, setCi] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
@@ -28,7 +34,6 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({ isOpen, onClose, on
     e.preventDefault();
     setError("");
 
-    // Validación de campos requeridos
     if (!ci || !name) {
       setError("CI y Nombre son campos obligatorios");
       return;

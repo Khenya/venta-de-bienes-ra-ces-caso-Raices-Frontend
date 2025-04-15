@@ -18,43 +18,54 @@ const PropertyPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const fetchProperty = async () => {
+    if (!id) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("No hay token");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/${id}`, {
+        headers: {
+          Authorization: token
+        },
+        credentials: "include"
+      });
+
+      if (!res.ok) throw new Error("No se pudo obtener la propiedad");
+      const data = await res.json();
+      
+      const combinedObservations = data.observations && data.observation_dates
+        ? [{
+            note: data.observations,
+            date: data.observation_dates
+          }]
+        : [];
+
+      const customer = data.customer_name ? {
+        name: data.customer_name,
+        phone: data.customer_phone,
+        ci: data.customer_ci
+      } : null;
+
+      setProperty({
+        ...data,
+        observations: combinedObservations,
+        customer
+      });
+    } catch (err: any) {
+      setError(err.message || "Error al cargar la propiedad");
+      console.error("Error fetching property:", err);
+  } finally {
+    setIsLoading(false);
+  }
+  };
 
   useEffect(() => {
-    const fetchProperty = async () => {
-      if (!id) return;
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setError("No hay token");
-        return;
-      }
-
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/${id}`, {
-          headers: {
-            Authorization: token
-          },
-          credentials: "include"
-        });
-
-        if (!res.ok) throw new Error("No se pudo obtener la propiedad");
-        const data = await res.json();
-        const combinedObservations =
-          data.observations && data.observation_dates
-            ? [{
-                note: data.observations,
-                date: data.observation_dates
-              }]
-            : [];
-
-        setProperty({
-          ...data,
-          observations: combinedObservations
-        });
-      } catch (err: any) {
-        setError(err.message);
-      }
-    };
-
     fetchProperty();
   }, [id]);
 
@@ -81,7 +92,10 @@ const PropertyPage = () => {
                   onEditClick={() => setShowEditModal(true)} 
                   property={property} 
                 />
-                <AdjudicatorCard onAddClick={() => setShowCustomerModal(true)} />
+                <AdjudicatorCard 
+                  onAddClick={() => setShowCustomerModal(true)} 
+                  customer={property.customer} 
+                />
                 <ObservationsCard 
                   observations={property.observations} 
                   propertyId={property.property_id} 
@@ -94,10 +108,15 @@ const PropertyPage = () => {
 
       <NewCustomerModal
         isOpen={showCustomerModal}
-        onClose={() => setShowCustomerModal(false)}
+        onClose={() => {
+          setShowCustomerModal(false);
+          fetchProperty();
+        }}
         onSave={() => {
           setShowCustomerModal(false);
+          fetchProperty();
         }}
+        propertyId={property?.property_id}
       />
       {property && (
         <EditPrperty
