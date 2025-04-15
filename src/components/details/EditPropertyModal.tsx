@@ -31,12 +31,13 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, 
 
     const requestData = {
       state,
-      price: price !== "" ? Number(price) : null
+      price: price !== "" ? Number(price) : null,
+      
     };
 
     try {
-      await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property/${propertyId}`,
+      await axios.patch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property/${propertyId}/state`,            
         requestData,
         {
           headers: {
@@ -45,7 +46,7 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, 
           },
           withCredentials: true,
         }
-      );    
+      );          
       onSave();
       onClose();
     } catch (error: any) {

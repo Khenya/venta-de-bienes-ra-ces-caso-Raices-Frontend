@@ -122,7 +122,10 @@ const PropertyPage = () => {
         <EditPrperty
           isOpen={showEditModal}
           onClose={() => setShowEditModal(false)}
-          onSave={() => setShowEditModal(false)}
+          onSave={() => {
+            setShowEditModal(false);
+            fetchProperty(); 
+          }}          
           propertyId={property.property_id}
         />
       )}
