@@ -48,8 +48,9 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
     const requestData = {
       ci: ci.trim(),
       name: name.trim(),
-      phone: phone.trim() || null // Envía null si phone está vacío
-    };
+      phone: phone.trim() || null,
+      property_id: propertyId
+    };    
 
     try {
       const response = await axios.post(
