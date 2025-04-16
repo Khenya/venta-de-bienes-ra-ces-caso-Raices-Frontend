@@ -48,12 +48,12 @@ const Table: React.FC<TableProps> = ({
               break;
             case "PRECIO":
               url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/price/${value}`;
-              break;
+            break;
             case "MANZANO":
-              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/manzano/${value}`;
+              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/manzano/${Number(value)}`;
               break;
             case "LOTE":
-              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/batch/${value}`;
+              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/batch/${Number(value)}`;
               break;
             default:
               break;
@@ -115,7 +115,7 @@ const Table: React.FC<TableProps> = ({
                 currentItems.map((property, index) => (
                   <TableRow 
                     key={property.property_id} 
-                    property={property}
+                    property={property} 
                   />
                 ))
               ) : (
