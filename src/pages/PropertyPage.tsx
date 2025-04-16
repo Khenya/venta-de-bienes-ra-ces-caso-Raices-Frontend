@@ -7,7 +7,7 @@ import PropertyHeader from '@/components/details/PropertyHeader';
 import PropertyCard from '@/components/details/PropertyCard';
 import AdjudicatorCard from '@/components/details/AdjudicatorCard';
 import ObservationsCard from '@/components/details/ObservationsCard';
-import styles from '../app/config/theme/PropertyHeader.module.css';
+import styles from '../app/config/theme/Card.module.css';
 import EditPrperty from '@/components/details/EditPropertyModal';
 import NewCustomerModal from "@/components/details/NewCustomerModal";
 

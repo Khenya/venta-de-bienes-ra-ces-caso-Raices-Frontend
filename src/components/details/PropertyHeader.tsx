@@ -1,4 +1,4 @@
-import styles from '../../app/config/theme/PropertyHeader.module.css';
+import styles from '../../app/config/theme/Card.module.css';
 
 interface Props {
   property: {
