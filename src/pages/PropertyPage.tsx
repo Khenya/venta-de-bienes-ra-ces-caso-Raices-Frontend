@@ -96,10 +96,7 @@ const PropertyPage = () => {
                   onAddClick={() => setShowCustomerModal(true)} 
                   customer={property.customer} 
                 />
-                <ObservationsCard 
-                  observations={property.observations} 
-                  propertyId={property.property_id} 
-                />
+                <ObservationsCard propertyId={property.property_id} />
               </>
             )}
           </div>
