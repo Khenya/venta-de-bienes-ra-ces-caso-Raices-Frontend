@@ -7,7 +7,7 @@ import { Colors } from "@/app/config/theme/Colors";
 
 import { CiFilter } from "react-icons/ci";
 import { RiDownloadLine } from "react-icons/ri";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const List = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,7 +22,24 @@ const List = () => {
   const handleSaveProperty = () => {
     setIsNewPropertyModalOpen(false);
   };
-
+  const getUserRole = (): string | null => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+  
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role;
+    } catch {
+      return null;
+    }
+  };
+  const [isAdmin, setIsAdmin] = useState(false);
+  
+  useEffect(() => {
+    const role = getUserRole();
+    if (role === "admin") setIsAdmin(true);
+  }, []);
+  
 
   return (
     <div className="min-h-screen w-full bg-gray-50">
@@ -48,12 +65,14 @@ const List = () => {
               </span>
             </button>
 
-            <button 
-              style={styles.cancelButton}
-              onClick={() => setIsNewPropertyModalOpen(true)}
-            >
-              Nuevo inmueble
-            </button>
+            {isAdmin && (
+              <button 
+                style={styles.cancelButton}
+                onClick={() => setIsNewPropertyModalOpen(true)}
+              >
+                Nuevo inmueble
+              </button>
+            )}
 
             <button 
               style={styles.cancelButton}
