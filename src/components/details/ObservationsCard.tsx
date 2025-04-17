@@ -2,6 +2,7 @@ import styles from '../../app/config/theme/Card.module.css';
 import { RiSendPlane2Line } from "react-icons/ri";
 
 import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 interface Observation {
   date: string;
@@ -17,6 +18,7 @@ const ObservationsCard: React.FC<ObservationsCardProps> = ({ propertyId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [observations, setObservations] = useState<Observation[]>([]);
+  const [role, setRole] = useState<string | null>(null);
 
   const fetchObservations = async () => {
     try {
@@ -44,6 +46,18 @@ const ObservationsCard: React.FC<ObservationsCardProps> = ({ propertyId }) => {
     }
   };
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token);
+        setRole(decoded.role);
+      } catch (e) {
+        console.error("Error decoding token:", e);
+      }
+    }
+  }, []);
+  
   useEffect(() => {
     fetchObservations();
   }, [propertyId]);
@@ -114,22 +128,22 @@ const ObservationsCard: React.FC<ObservationsCardProps> = ({ propertyId }) => {
           </p>
         )}
       </div>
-
-      <div className={styles.observationInputWrapper}>
-        <input
-          type="text"
-          value={newObservation}
-          onChange={(e) => setNewObservation(e.target.value)}
-          placeholder="Ingresa una observación"
-          className={styles.observationInput}
-          onKeyPress={(e) => e.key === 'Enter' && handleSendObservation()}
-        />
-        <RiSendPlane2Line 
-          className={`${styles.observationSendIcon} ${isLoading ? 'disabled' : ''}`}
-          onClick={!isLoading ? handleSendObservation : undefined}
-        />
-      </div>
-
+      {role === 'admin' && (
+        <div className={styles.observationInputWrapper}>
+          <input
+            type="text"
+            value={newObservation}
+            onChange={(e) => setNewObservation(e.target.value)}
+            placeholder="Ingresa una observación"
+            className={styles.observationInput}
+            onKeyPress={(e) => e.key === 'Enter' && handleSendObservation()}
+          />
+          <RiSendPlane2Line 
+            className={`${styles.observationSendIcon} ${isLoading ? 'disabled' : ''}`}
+            onClick={!isLoading ? handleSendObservation : undefined}
+          />
+        </div>
+      )}
       {error && (
         <p className="text-red-500 text-xs mt-2 text-center">{error}</p>
       )}
