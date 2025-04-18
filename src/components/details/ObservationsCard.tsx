@@ -128,7 +128,7 @@ const ObservationsCard: React.FC<ObservationsCardProps> = ({ propertyId }) => {
           </p>
         )}
       </div>
-      {role === 'Administrador' && (
+      {role === 'admin' && (
         <div className={styles.observationInputWrapper}>
           <input
             type="text"
