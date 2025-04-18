@@ -30,11 +30,11 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
   const [testimonyNumber, setTestimonyNumber] = useState<number | "">("");
   const [isClient, setIsClient] = useState(false);
   const [owners, setOwners] = useState<Owner[]>([
-    { fullName: "German Choque Ramos", displayName: "German Choque" },
-    { fullName: "Aydee Mercedes Choque de Alvarado", displayName: "Aydee Choque" },
-    { fullName: "Nancy Lidia Choque Ramos", displayName: "Nancy Choque" },
-    { fullName: "Jose Luis Choque Ramos", displayName: "Jose Choque" },
-    { fullName: "Javier Yason Choque Ramos", displayName: "Javier Choque" }
+    { fullName: "German Choque", displayName: "German Choque" },
+    { fullName: "Aydee Choque", displayName: "Aydee Choque" },
+    { fullName: "Nancy Choque", displayName: "Nancy Choque" },
+    { fullName: "Jose Choque", displayName: "Jose Choque" },
+    { fullName: "Javier Choque", displayName: "Javier Choque" }
   ]);
   const [selectedOwner, setSelectedOwner] = useState("");
 

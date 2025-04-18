@@ -22,11 +22,11 @@ const TableRow: React.FC<{ property: Property }> = ({ property }) => {
   };
 
   const allOwners = [
-    "German Choque Ramos",
-    "Aydee Mercedes Choque de Alvarado",
-    "Nancy Lidia Choque Ramos",
-    "Jose Luis Choque Ramos",
-    "Javier Yason Choque Ramos"
+    "German Choque",
+    "Aydee Choque",
+    "Nancy Choque",
+    "Jose Choque",
+    "Javier Choque"
   ].sort().join(', ');
 
   const checkAllOwners = (owners: string) => {

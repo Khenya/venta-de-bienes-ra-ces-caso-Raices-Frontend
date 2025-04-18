@@ -88,11 +88,11 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
                 onChange={(e) => setOwnerOption(e.target.value)}
               >
                 <option value="TODOS">TODOS</option>
-                <option value="Aydee Mercedes Choque de Alvarado">Aydee Choque</option>
-                <option value="German Choque Ramos">German Choque</option>
-                <option value="Nancy Lidia Choque Ramos">Nancy Choque</option>
-                <option value="Jose Luis Choque Ramos">Jose Choque</option>
-                <option value="Javier Yason Choque Ramos">Javier Choque</option>
+                <option value="Aydee Choque">Aydee Choque</option>
+                <option value="German Choque">German Choque</option>
+                <option value="Nancy Choque">Nancy Choque</option>
+                <option value="Jose Choque">Jose Choque</option>
+                <option value="Javier Choque">Javier Choque</option>
               </select>
             </div>
           )}

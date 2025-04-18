@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import {jwtDecode} from "jwt-decode";
 
 import TableRow from "./TableRow";
 import styles from "@/app/config/theme/styles";
+
 interface Property {
   property_id: number;
   manzano: string;
@@ -9,6 +11,12 @@ interface Property {
   owner?: string;
   state: string;
   price: number;
+}
+
+interface DecodedToken {
+  userId: number;
+  role: string;
+  username: string; 
 }
 
 interface TableProps {
@@ -36,7 +44,13 @@ const Table: React.FC<TableProps> = ({
       }
   
       try {
+        const decoded: DecodedToken = jwtDecode(token);
         let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties`;
+  
+        if (decoded.role !== "admin" && !filter) {
+          url += `?owner=${encodeURIComponent(decoded.username)}`;
+        }
+  
         if (filter) {
           const { field, value } = filter;
           switch (field) {
@@ -48,7 +62,7 @@ const Table: React.FC<TableProps> = ({
               break;
             case "PRECIO":
               url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/price/${value}`;
-            break;
+              break;
             case "MANZANO":
               url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/manzano/${Number(value)}`;
               break;
@@ -85,7 +99,7 @@ const Table: React.FC<TableProps> = ({
     };
   
     fetchProperties();
-  }, [filter, onTotalItemsChange]); 
+  }, [filter, onTotalItemsChange]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
