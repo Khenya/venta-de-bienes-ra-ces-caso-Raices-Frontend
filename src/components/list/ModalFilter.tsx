@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { RxCross2 } from "react-icons/rx";
+import {jwtDecode} from "jwt-decode";
 
 import { Colors } from "@/app/config/theme/Colors";
 import styles from "@/app/config/theme/styles";
@@ -19,6 +20,15 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
   const [textValue, setTextValue] = useState<string>("");
   const [isFormValid, setIsFormValid] = useState(false);
   const [stateOption, setStateOption] = useState<string>("LIBRE");
+  const [isAdmin, setIsAdmin] = useState(false);
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded: any = jwtDecode(token);
+      setIsAdmin(decoded?.role === "admin");
+    }
+  }, []);
 
   useEffect(() => {
     if (selectedField === "DUEÑO") {
@@ -53,7 +63,7 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
                 setOwnerOption("TODOS");
               }}
             >
-              <option value="DUEÑO">DUEÑO</option>
+              {isAdmin && <option value="DUEÑO">DUEÑO</option>}
               <option value="ESTADO">ESTADO</option>
               <option value="PRECIO">PRECIO (DOLARES)</option>
               <option value="MANZANO">MANZANO</option>
@@ -79,7 +89,7 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
             </div>
           )}
           
-          {selectedField === "DUEÑO" && (
+          {selectedField === "DUEÑO" && isAdmin && (
             <div style={styles.formGroup}>
               <label style={styles.formLabel}>Seleccione un dueño:</label>
               <select
