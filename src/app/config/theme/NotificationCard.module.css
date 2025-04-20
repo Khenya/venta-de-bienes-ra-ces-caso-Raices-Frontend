@@ -1,0 +1,29 @@
+.notificationCard {
+  background-color: #8C756A;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  font-family: 'Inter', sans-serif;
+}
+  
+.text {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+  
+.stateChange {
+  font-size: 16px;
+  font-weight: 300;
+  margin-bottom: 6px;
+}
+  
+.last, .new {
+  font-weight: 500;
+}
+  
+.separator {
+  border: none;
+  border-top: 2px solid #EFEDE1;
+  margin-top: 4px;
+}  

@@ -7,6 +7,8 @@ import { TbLogout } from "react-icons/tb";
 import Image from "next/image";
 import Modal from "./Modal"; 
 import { logout } from "../../utils/Logout";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { IoIosNotifications } from "react-icons/io";
 
 const Header2: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -72,15 +74,18 @@ const Header2: React.FC = () => {
             >
               Listado
             </a>
-            <TbLogout 
-              style={{ 
+            <IoIosNotificationsOutline style={{ 
                 color: Colors.primary, 
                 marginRight: "15px", 
                 cursor: "pointer",
                 fontSize: "1.25rem"
-              }} 
-              onClick={() => setIsModalOpen(true)}
-            />
+              }}/>
+            <IoIosNotifications  style={{ 
+                color: Colors.primary, 
+                marginRight: "15px", 
+                cursor: "pointer",
+                fontSize: "1.25rem"
+              }}/> 
             <button 
               style={{ 
                 color: Colors.primary, 
@@ -89,10 +94,19 @@ const Header2: React.FC = () => {
                 cursor: "pointer",
                 fontSize: "1rem",
                 padding: 0,
-                margin: 0
+                margin: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
               }} 
               onClick={() => setIsModalOpen(true)}
             >
+              <TbLogout 
+                style={{ 
+                  color: Colors.primary,
+                  fontSize: "1.25rem"
+                }} 
+              />
               Cerrar Sesión
             </button>
           </div>

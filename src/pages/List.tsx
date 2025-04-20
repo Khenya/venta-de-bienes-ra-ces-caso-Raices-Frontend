@@ -45,7 +45,7 @@ const List = () => {
     <div className="min-h-screen w-full bg-gray-50">
       <Header2 />
       <main style={{ 
-        paddingTop: "80px", 
+        paddingTop: "40px", 
         minHeight: "calc(100vh - 80px)",
         display: "flex",
         flexDirection: "column",
