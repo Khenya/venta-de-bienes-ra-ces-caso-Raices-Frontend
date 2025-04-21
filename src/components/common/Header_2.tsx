@@ -1,18 +1,43 @@
 "use client";
 
-import logo from "../../assetes/Logo.png";
-import { Colors } from "../../app/config/theme/Colors";
-import React, { useState } from "react";
-import { TbLogout } from "react-icons/tb";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Modal from "./Modal"; 
-import { logout } from "../../utils/Logout";
+import { TbLogout } from "react-icons/tb";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { IoIosNotifications } from "react-icons/io";
 
+import logo from "../../assetes/Logo.png";
+import Modal from "./Modal"; 
+import { Colors } from "../../app/config/theme/Colors";
+import { logout } from "../../utils/Logout";
+
 const Header2: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasNotifications, setHasNotifications] = useState(false);
 
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+  
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/notifications/unread`, {
+          headers: { Authorization: token },
+          credentials: "include"
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setHasNotifications(data.length > 0);  
+        }
+      } catch (error) {
+        console.error("Error al obtener notificaciones:", error);
+      }
+    };
+  
+    fetchNotifications();
+  }, []);
+  
   return (
     <>
       <header style={{
@@ -74,18 +99,25 @@ const Header2: React.FC = () => {
             >
               Listado
             </a>
-            <IoIosNotificationsOutline style={{ 
-                color: Colors.primary, 
-                marginRight: "15px", 
-                cursor: "pointer",
-                fontSize: "1.25rem"
-              }}/>
-            <IoIosNotifications  style={{ 
-                color: Colors.primary, 
-                marginRight: "15px", 
-                cursor: "pointer",
-                fontSize: "1.25rem"
-              }}/> 
+            {hasNotifications ? (
+              <IoIosNotifications 
+                style={{ 
+                  color: Colors.primary, 
+                  marginRight: "15px", 
+                  cursor: "pointer",
+                  fontSize: "1.25rem"
+                }} 
+              />
+            ) : (
+              <IoIosNotificationsOutline 
+                style={{ 
+                  color: Colors.primary, 
+                  marginRight: "15px", 
+                  cursor: "pointer",
+                  fontSize: "1.25rem"
+                }} 
+              />
+            )}
             <button 
               style={{ 
                 color: Colors.primary, 

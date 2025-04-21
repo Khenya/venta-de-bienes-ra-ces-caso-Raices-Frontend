@@ -15,7 +15,7 @@ interface ModalFilterProps {
 }
 
 const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onApplyFilter }) => {
-  const [selectedField, setSelectedField] = useState<string>("DUEÑO");
+  const [selectedField, setSelectedField] = useState<string>("ESTADO");
   const [ownerOption, setOwnerOption] = useState<string>("TODOS");
   const [textValue, setTextValue] = useState<string>("");
   const [isFormValid, setIsFormValid] = useState(false);
@@ -58,13 +58,15 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
               style={styles.formInput}
               value={selectedField}
               onChange={(e) => {
-                setSelectedField(e.target.value);
+                const field = e.target.value;
+                setSelectedField(field);
                 setTextValue("");
-                setOwnerOption("TODOS");
-              }}
+                setOwnerOption("Aydee Choque");
+                setStateOption("LIBRE"); 
+              }}              
             >
-              {isAdmin && <option value="DUEÑO">DUEÑO</option>}
               <option value="ESTADO">ESTADO</option>
+              {isAdmin && <option value="DUEÑO">DUEÑO</option>}
               <option value="PRECIO">PRECIO (DOLARES)</option>
               <option value="MANZANO">MANZANO</option>
               <option value="LOTE">LOTE</option>
@@ -97,7 +99,7 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
                 value={ownerOption}
                 onChange={(e) => setOwnerOption(e.target.value)}
               >
-                <option value="TODOS">TODOS</option>
+                {/* <option value="TODOS">TODOS</option> */}
                 <option value="Aydee Choque">Aydee Choque</option>
                 <option value="German Choque">German Choque</option>
                 <option value="Nancy Choque">Nancy Choque</option>
