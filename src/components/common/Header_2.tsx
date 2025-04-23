@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { TbLogout } from "react-icons/tb";
 import { IoIosNotificationsOutline } from "react-icons/io";
@@ -10,10 +10,14 @@ import logo from "../../assetes/Logo.png";
 import Modal from "./Modal"; 
 import { Colors } from "../../app/config/theme/Colors";
 import { logout } from "../../utils/Logout";
+import NotificationCard from "../notification/NotificationCard"; 
 
 const Header2: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [hasNotifications, setHasNotifications] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -21,22 +25,39 @@ const Header2: React.FC = () => {
       if (!token) return;
   
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/notifications/unread`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/notifications`, {
           headers: { Authorization: token },
           credentials: "include"
         });
-  
+        
         if (response.ok) {
           const data = await response.json();
-          setHasNotifications(data.length > 0);  
-        }
+          setNotifications(data);
+          const unread = data.filter((n: any) => !n.is_read).length;
+          setUnreadCount(unread);
+        }        
       } catch (error) {
-        console.error("Error al obtener notificaciones:", error);
+        console.error("Error al cargar notificaciones:", error);
       }
     };
   
     fetchNotifications();
-  }, []);
+  }, []);  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setShowNotificationModal(false);
+      }
+    };
+  
+    if (showNotificationModal) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+  
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showNotificationModal]);
   
   return (
     <>
@@ -99,8 +120,9 @@ const Header2: React.FC = () => {
             >
               Listado
             </a>
-            {hasNotifications ? (
+            {unreadCount > 0 ? (
               <IoIosNotifications 
+                onClick={() => setShowNotificationModal(true)}
                 style={{ 
                   color: Colors.primary, 
                   marginRight: "15px", 
@@ -110,6 +132,7 @@ const Header2: React.FC = () => {
               />
             ) : (
               <IoIosNotificationsOutline 
+                onClick={() => setShowNotificationModal(true)}
                 style={{ 
                   color: Colors.primary, 
                   marginRight: "15px", 
@@ -151,6 +174,33 @@ const Header2: React.FC = () => {
         onConfirm={logout}
         text="¿Seguro que quieres cerrar sesión?"
       />
+      {showNotificationModal && (
+        <div
+          ref={modalRef}
+          style={{
+            position: "fixed",
+            top: "95px",
+            right: "40px",
+            width: "300px",
+            maxHeight: "400px",
+            overflowY: "auto",
+            backgroundColor: Colors.text_color,
+            borderRadius: "8px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+            zIndex: 100
+          }}
+        >
+          <div>
+            {notifications.length > 0 ? (
+              notifications.map((n: any, idx: number) => (
+                <NotificationCard key={idx} manzano={n.manzano} batch={n.batch} state={n.state} />
+              ))
+            ) : (
+              <p>No hay notificaciones</p>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 };
