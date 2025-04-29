@@ -3,33 +3,45 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { TbLogout } from "react-icons/tb";
-import { IoIosNotificationsOutline } from "react-icons/io";
-import { IoIosNotifications } from "react-icons/io";
+import { IoIosNotificationsOutline, IoIosNotifications } from "react-icons/io";
 
 import logo from "../../assetes/Logo.png";
-import Modal from "./Modal"; 
+import Modal from "./Modal";
 import { Colors } from "../../app/config/theme/Colors";
 import { logout } from "../../utils/Logout";
-import NotificationCard from "../notification/NotificationCard"; 
+import NotificationCard from "../notification/NotificationCard";
+
+interface Notification {
+  notification_id: number;
+  manzano: number;
+  batch: number;
+  state: string;
+  is_read: boolean;
+}
 
 const Header2: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchNotifications = async () => {
+      if (typeof window === "undefined") return;
       const token = localStorage.getItem("token");
       if (!token) return;
-  
+    
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/notifications`, {
-          headers: { Authorization: token },
-          credentials: "include"
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`, 
+            "Content-Type": "application/json"
+          },
+          credentials: "include" 
         });
-        
+    
         if (response.ok) {
           const data = await response.json();
           setNotifications(data);
@@ -42,23 +54,49 @@ const Header2: React.FC = () => {
     };
   
     fetchNotifications();
-  }, []);  
+  }, []);
+
+  const deleteAllNotifications = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+  
+    try {
+      const promises = notifications.map((n) =>
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/notifications/${n.notification_id}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          credentials: "include"
+        })
+      );
+  
+      await Promise.all(promises);
+      setNotifications([]);
+      setUnreadCount(0);
+    } catch (error) {
+      console.error("Error al eliminar notificaciones automáticamente:", error);
+    }
+  };
+
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = async (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         setShowNotificationModal(false);
+        await deleteAllNotifications(); 
       }
     };
-  
+
     if (showNotificationModal) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-  
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showNotificationModal]);
-  
+  }, [showNotificationModal, notifications]);
+
   return (
     <>
       <header style={{
@@ -81,65 +119,17 @@ const Header2: React.FC = () => {
           padding: "10px 40px",
           width: "100%",
         }}>
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-          }}>
-            <Image 
-              src={logo} 
-              alt="Logo" 
-              width={56} 
-              height={56} 
-              className="object-contain"
-            />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Image src={logo} alt="Logo" width={56} height={56} className="object-contain" />
           </div>
 
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-            marginRight: "40px",
-          }}>
-            <a 
-              href="/Plano" 
-              style={{ 
-                color: Colors.primary, 
-                marginRight: "15px",
-                textDecoration: "none"
-              }}
-            >
-              Plano
-            </a>
-            <a 
-              href="/List" 
-              style={{ 
-                color: Colors.primary, 
-                marginRight: "15px",
-                textDecoration: "none"
-              }}
-            >
-              Listado
-            </a>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px", marginRight: "40px" }}>
+            <a href="/Plano" style={{ color: Colors.primary, marginRight: "15px", textDecoration: "none" }}>Plano</a>
+            <a href="/List" style={{ color: Colors.primary, marginRight: "15px", textDecoration: "none" }}>Listado</a>
             {unreadCount > 0 ? (
-              <IoIosNotifications 
-                onClick={() => setShowNotificationModal(true)}
-                style={{ 
-                  color: Colors.primary, 
-                  marginRight: "15px", 
-                  cursor: "pointer",
-                  fontSize: "1.25rem"
-                }} 
-              />
+              <IoIosNotifications onClick={() => setShowNotificationModal(true)} style={{ color: Colors.primary, marginRight: "15px", cursor: "pointer", fontSize: "1.25rem" }} />
             ) : (
-              <IoIosNotificationsOutline 
-                onClick={() => setShowNotificationModal(true)}
-                style={{ 
-                  color: Colors.primary, 
-                  marginRight: "15px", 
-                  cursor: "pointer",
-                  fontSize: "1.25rem"
-                }} 
-              />
+              <IoIosNotificationsOutline onClick={() => setShowNotificationModal(true)} style={{ color: Colors.primary, marginRight: "15px", cursor: "pointer", fontSize: "1.25rem" }} />
             )}
             <button 
               style={{ 
@@ -156,12 +146,7 @@ const Header2: React.FC = () => {
               }} 
               onClick={() => setIsModalOpen(true)}
             >
-              <TbLogout 
-                style={{ 
-                  color: Colors.primary,
-                  fontSize: "1.25rem"
-                }} 
-              />
+              <TbLogout style={{ color: Colors.primary, fontSize: "1.25rem" }} />
               Cerrar Sesión
             </button>
           </div>
@@ -192,11 +177,16 @@ const Header2: React.FC = () => {
         >
           <div>
             {notifications.length > 0 ? (
-              notifications.map((n: any, idx: number) => (
-                <NotificationCard key={idx} manzano={n.manzano} batch={n.batch} state={n.state} />
+              notifications.map((n, idx) => (
+                <NotificationCard
+                  key={idx}
+                  manzano={n.manzano}
+                  batch={n.batch}
+                  state={n.state}
+                />
               ))
             ) : (
-              <p>No hay notificaciones</p>
+              <div/>
             )}
           </div>
         </div>
