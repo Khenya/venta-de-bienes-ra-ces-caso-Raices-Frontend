@@ -31,7 +31,7 @@ const Header2: React.FC = () => {
       if (typeof window === "undefined") return;
       const token = localStorage.getItem("token");
       if (!token) return;
-    
+  
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/notifications`, {
           method: 'GET',
@@ -39,9 +39,9 @@ const Header2: React.FC = () => {
             Authorization: `Bearer ${token}`, 
             "Content-Type": "application/json"
           },
-          credentials: "include" 
+          credentials: "include"
         });
-    
+  
         if (response.ok) {
           const data = await response.json();
           setNotifications(data);
@@ -54,8 +54,28 @@ const Header2: React.FC = () => {
     };
   
     fetchNotifications();
+  
+    const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/notifications/stream`);
+  
+    eventSource.onmessage = (event) => {
+      const { type, payload } = JSON.parse(event.data);
+  
+      if (type === "NEW_NOTIFICATION") {
+        setNotifications(prev => [payload, ...prev]);
+        setUnreadCount(prev => prev + 1);
+      }
+    };
+  
+    eventSource.onerror = (err) => {
+      console.error("Error en SSE:", err);
+      eventSource.close();
+    };
+  
+    return () => {
+      eventSource.close();
+    };
   }, []);
-
+  
   const deleteAllNotifications = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
