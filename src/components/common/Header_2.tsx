@@ -146,11 +146,38 @@ const Header2: React.FC = () => {
           <div style={{ display: "flex", alignItems: "center", gap: "16px", marginRight: "40px" }}>
             <a href="/Plano" style={{ color: Colors.primary, marginRight: "15px", textDecoration: "none" }}>Plano</a>
             <a href="/List" style={{ color: Colors.primary, marginRight: "15px", textDecoration: "none" }}>Listado</a>
-            {unreadCount > 0 ? (
-              <IoIosNotifications onClick={() => setShowNotificationModal(true)} style={{ color: Colors.primary, marginRight: "15px", cursor: "pointer", fontSize: "1.25rem" }} />
-            ) : (
-              <IoIosNotificationsOutline onClick={() => setShowNotificationModal(true)} style={{ color: Colors.primary, marginRight: "15px", cursor: "pointer", fontSize: "1.25rem" }} />
-            )}
+            <div style={{ position: 'relative', marginRight: '15px' }}>
+              {unreadCount > 0 ? (
+                <IoIosNotifications 
+                  onClick={() => setShowNotificationModal(true)} 
+                  style={{ color: Colors.primary, cursor: "pointer", fontSize: "1.25rem" }} 
+                />
+              ) : (
+                <IoIosNotificationsOutline 
+                  onClick={() => setShowNotificationModal(true)} 
+                  style={{ color: Colors.primary, cursor: "pointer", fontSize: "1.25rem" }} 
+                />
+              )}
+              {unreadCount > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  right: '-8px',
+                  backgroundColor: '#E53517',
+                  color: 'white',
+                  borderRadius: '50%',
+                  width: '18px',
+                  height: '18px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '12px',
+                  fontWeight: 'bold'
+                }}>
+                  {unreadCount}
+                </span>
+              )}
+            </div>
             <button 
               style={{ 
                 color: Colors.primary, 
