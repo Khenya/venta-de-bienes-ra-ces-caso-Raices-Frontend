@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import logo from '../../assetes/Logo_extendido.png';
+import logo from '../../assets/Logo_extendido.png';
 
 const Header = () => {
   return (

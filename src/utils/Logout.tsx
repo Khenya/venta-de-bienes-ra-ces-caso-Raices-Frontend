@@ -1,20 +1,28 @@
-import api from "./api"; 
+"use client";
 
 export const logout = async () => {
-  try {
-    const response = await api.post(
-      "/api/auth/logout",
-      {}, 
-      { withCredentials: true } 
-    );
+  if (typeof window === 'undefined') return;
 
-    if (response.status === 200) {
-      localStorage.removeItem("token"); 
-      window.location.href = "/"; 
-    } else {
-      console.error("Error al cerrar sesión en el servidor");
+  try {
+    const token = localStorage.getItem('token');
+    
+    localStorage.removeItem('token');
+    
+    if (token) {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+      });
     }
+    window.location.assign('/');
+    
   } catch (error) {
-    console.error("Error de red en logout:", error);
+    console.error('Logout error:', error);
+    localStorage.removeItem('token');
+    window.location.assign('/');
   }
 };

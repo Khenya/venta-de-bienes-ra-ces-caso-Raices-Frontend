@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import withAuth from '../hoc/WithAuth';
 import Header2 from "@/components/common/Header_2";
-import map from "../assetes/map.png";
+import map from "../assets/map.png";
 
 const PlanoPage = () => {
   return (

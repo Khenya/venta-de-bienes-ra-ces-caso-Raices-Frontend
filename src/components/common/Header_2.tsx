@@ -5,7 +5,7 @@ import Image from "next/image";
 import { TbLogout } from "react-icons/tb";
 import { IoIosNotificationsOutline, IoIosNotifications } from "react-icons/io";
 
-import logo from "../../assetes/Logo.png";
+import logo from "../../assets/Logo.png";
 import Modal from "./Modal";
 import { Colors } from "../../app/config/theme/Colors";
 import { logout } from "../../utils/Logout";
@@ -97,6 +97,18 @@ const Header2: React.FC = () => {
       setUnreadCount(0);
     } catch (error) {
       console.error("Error al eliminar notificaciones automáticamente:", error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      if (typeof window !== 'undefined') {
+        await logout();
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsModalOpen(false);
     }
   };
 
@@ -203,7 +215,7 @@ const Header2: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onConfirm={logout}
+        onConfirm={handleLogout}  
         text="¿Seguro que quieres cerrar sesión?"
       />
       {showNotificationModal && (
