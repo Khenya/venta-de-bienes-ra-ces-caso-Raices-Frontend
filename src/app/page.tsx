@@ -1,9 +1,5 @@
-import Login from "../pages/Login"
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return (
-    <div className="min-h-screen  bg-[#F9FAE8]">
-      <Login/>
-    </div>
-  );
+  redirect('/Login');
 }

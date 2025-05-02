@@ -41,7 +41,7 @@ const LoginForm = () => {
   return (
     <div className="w-full max-w-md mx-auto my-8">
       <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-center mb-6 text-2xl font-semibold" style={{ color: Colors.text_color }}>
+        <h1 className="text-center mb-6 text-2xl font-bold" style={{ color: Colors.text_color }}>
           Bienvenido otra vez
         </h1>
         <p className="text-center mb-6 text-gray-600">

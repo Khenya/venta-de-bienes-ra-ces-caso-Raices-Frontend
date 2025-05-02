@@ -18,11 +18,11 @@ export const logout = async () => {
         credentials: 'include'
       });
     }
-    window.location.assign('/');
+    window.location.assign('/Login');
     
   } catch (error) {
     console.error('Logout error:', error);
     localStorage.removeItem('token');
-    window.location.assign('/');
+    window.location.assign('/Login');
   }
 };
