@@ -95,6 +95,9 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, 
           </div>
 
           <div style={styles.buttonsContainer}>
+            <button onClick={onClose} style={styles.cancelButton}>
+              Cancelar
+            </button>
             <button 
               type="submit"
               style={styles.confirmButton}

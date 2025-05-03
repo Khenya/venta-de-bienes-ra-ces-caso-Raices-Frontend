@@ -8,6 +8,7 @@ import { Colors } from "@/app/config/theme/Colors";
 import { CiFilter } from "react-icons/ci";
 import { RiDownloadLine } from "react-icons/ri";
 import { useState, useEffect } from "react";
+import { FiPlus } from "react-icons/fi";
 
 const List = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,15 +66,6 @@ const List = () => {
               </span>
             </button>
 
-            {isAdmin && (
-              <button 
-                style={styles.cancelButton}
-                onClick={() => setIsNewPropertyModalOpen(true)}
-              >
-                Nuevo inmueble
-              </button>
-            )}
-
             <button 
               style={styles.cancelButton}
               onClick={() => setIsFilterModalOpen(true)}
@@ -83,6 +75,18 @@ const List = () => {
                 Filtros
               </span>
             </button>
+            
+            {isAdmin && (
+              <button 
+                style={styles.confirmButton}
+                onClick={() => setIsNewPropertyModalOpen(true)}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>                  
+                  <FiPlus className="text-lg" />
+                  Nuevo inmueble
+                </span>
+              </button>
+            )}
           </div>
           
           <Table 

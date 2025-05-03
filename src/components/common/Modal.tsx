@@ -21,7 +21,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onConfirm, text }) => {
           <RxCross2 style={{ color: Colors.text_color, fontSize: "24px", cursor: "pointer" }} />
         </div>
 
-        <h1 style={{ color: Colors.brown}}>{text}</h1>
+        <h1 className="text-center" style={{ color: Colors.brown }}>
+          {text}
+        </h1>
         <div style={styles.buttonsContainer}>
           <button onClick={onConfirm} style={styles.confirmButton}>
             Confirmar

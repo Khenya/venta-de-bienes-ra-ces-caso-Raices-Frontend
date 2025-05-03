@@ -19,10 +19,11 @@ const styles: Record<string, CSSProperties> = {
   },
   cancelButton: {
     padding: '10px 20px',
-    color: '#000',
-    border: `1px solid ${Colors.text_color}`, 
+    color: Colors.text_color,
+    border: `1.8px solid ${Colors.text_color}`, 
     borderRadius: '4px',
     cursor: 'pointer',
+    backgroundColor: Colors.primary
   },
   overlay: {
     position: "fixed",
@@ -42,7 +43,7 @@ const styles: Record<string, CSSProperties> = {
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
     maxWidth: "600px",
     width: "100%",
-    textAlign: "left",
+    textAlign: "center",
     position: "relative",
     maxHeight: "72vh",
     overflowY: "auto", 
