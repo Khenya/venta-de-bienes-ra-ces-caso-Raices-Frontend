@@ -8,7 +8,7 @@ interface Property {
   property_id: number;
   manzano: string;
   batch: string;
-  owner?: string;
+  owner_names?: string;
   state: string;
   price: number;
 }
@@ -24,15 +24,18 @@ interface TableProps {
   itemsPerPage: number;
   onTotalItemsChange: (total: number) => void;
   filter: { field: string; value: string } | null;
+  properties: Property[];
+  setProperties: (props: Property[]) => void;
 }
 
 const Table: React.FC<TableProps> = ({ 
   currentPage, 
   itemsPerPage,
   onTotalItemsChange,
-  filter
+  filter,
+  properties,
+  setProperties
 }) => {
-  const [properties, setProperties] = useState<Property[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -73,6 +76,7 @@ const Table: React.FC<TableProps> = ({
               break;
           }
         }
+
         const headers = new Headers();
         headers.set("Authorization", token);
   
@@ -99,13 +103,12 @@ const Table: React.FC<TableProps> = ({
     };
   
     fetchProperties();
-  }, [filter, onTotalItemsChange]);
+  }, [filter, onTotalItemsChange, setProperties]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = properties.slice(indexOfFirstItem, indexOfLastItem);
 
- 
   return (
     <div className="w-full max-w-6xl bg-white rounded-lg shadow-md overflow-hidden">
       {error ? (
@@ -114,8 +117,8 @@ const Table: React.FC<TableProps> = ({
         <div className="overflow-x-auto">
           <table style={styles.table}>
             <thead className="bg-[#8C756A] text-white">
-            <tr style={styles.tableHeader}>
-                <th  style={styles.tableCell}>N°</th>
+              <tr style={styles.tableHeader}>
+                <th style={styles.tableCell}>N°</th>
                 <th style={styles.tableCell}>MANZANO</th>
                 <th style={styles.tableCell}>LOTE</th>
                 <th style={styles.tableCell}>DUEÑO</th>
@@ -126,7 +129,7 @@ const Table: React.FC<TableProps> = ({
             </thead>
             <tbody>
               {currentItems.length > 0 ? (
-                currentItems.map((property, index) => (
+                currentItems.map((property: Property, index: number) => (
                   <TableRow 
                     key={property.property_id} 
                     property={property} 

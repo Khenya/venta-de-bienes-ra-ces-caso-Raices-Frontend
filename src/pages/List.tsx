@@ -9,6 +9,17 @@ import { CiFilter } from "react-icons/ci";
 import { RiDownloadLine } from "react-icons/ri";
 import { useState, useEffect } from "react";
 import { FiPlus } from "react-icons/fi";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+
+export interface Property {
+  property_id: number;
+  manzano: string;
+  batch: string;
+  owner_names?: string;
+  state: string;
+  price: number;
+}
 
 const List = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,8 +28,9 @@ const List = () => {
   const [isNewPropertyModalOpen, setIsNewPropertyModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-
+  const [isAdmin, setIsAdmin] = useState(false);
   const [filter, setFilter] = useState<{ field: string; value: string } | null>(null);
+  const [properties, setProperties] = useState<Property[]>([]);
 
   const handleSaveProperty = () => {
     setIsNewPropertyModalOpen(false);
@@ -34,14 +46,31 @@ const List = () => {
       return null;
     }
   };
-  const [isAdmin, setIsAdmin] = useState(false);
   
   useEffect(() => {
     const role = getUserRole();
     if (role === "admin") setIsAdmin(true);
   }, []);
   
-
+  const exportToExcel = () => {
+    const data = properties.map((p, index) => ({
+      "#": index + 1,
+      "Manzano": p.manzano,
+      "Lote": p.batch,
+      "Dueño": p.owner_names || "N/A",
+      "Estado de Pago": p.state,
+      "Precio (USD)": p.price,
+    }));
+  
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Propiedades");
+  
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    saveAs(blob, "Listado_Inmuebles.xlsx");
+  };
+  
   return (
     <div className="min-h-screen w-full bg-gray-50">
       <Header2 />
@@ -59,7 +88,7 @@ const List = () => {
             </h1>
           </div>
           <div style={styles.buttonsContainer}>
-            <button style={styles.confirmButton}>
+            <button style={styles.confirmButton} onClick={exportToExcel}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <RiDownloadLine className="text-lg" />
                 Descargar
@@ -89,11 +118,13 @@ const List = () => {
             )}
           </div>
           
-          <Table 
-            currentPage={currentPage} 
+          <Table
+            currentPage={currentPage}
             itemsPerPage={itemsPerPage}
             onTotalItemsChange={setTotalItems}
             filter={filter}
+            properties={properties}
+            setProperties={setProperties}
           />
 
           <div style={styles.buttonsContainerNext}>
