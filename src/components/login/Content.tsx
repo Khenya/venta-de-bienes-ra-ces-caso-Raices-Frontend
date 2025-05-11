@@ -1,15 +1,17 @@
 "use client";
-import { Colors } from "@/app/config/theme/Colors";
 import { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
 import api from "../../utils/api";
-import InputField from "./InputField";
+import { Colors } from "@/app/config/theme/Colors";
 
 const LoginForm = () => {
   const [usuario, setUsuario] = useState("");
   const [contraseña, setContraseña] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [mostrarContraseña, setMostrarContraseña] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,56 +29,112 @@ const LoginForm = () => {
 
       localStorage.setItem("token", response.data.token);
       window.location.href = "/Plano";
-    } catch (error) {
+    } catch {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
     }
   };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      console.log("El código se ejecuta en el cliente");
+      console.log("Render en cliente");
     }
   }, []);
 
   return (
-    <div className="w-full max-w-md mx-auto my-8">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-center mb-6 text-2xl font-bold" style={{ color: Colors.text_color }}>
+    <div
+      className="d-flex justify-content-center align-items-center w-100 h-100"
+      style={{ backgroundColor: Colors.primary }}
+    >
+      <div
+        className="card p-4 shadow"
+        style={{
+          maxWidth: "400px",
+          width: "100%",
+          borderColor: Colors.text_color,
+          borderWidth: "1px",
+          borderStyle: "solid",
+          color: Colors.text_color,
+        }}
+      >
+        <h2 className="text-center mb-2" style={{ color: Colors.text_color }}>
           Bienvenido otra vez
-        </h1>
-        <p className="text-center mb-6 text-gray-600">
+        </h2>
+        <p className="text-center mb-4" style={{ color: Colors.text_color }}>
           Por favor ingresa con tu usuario y contraseña
         </p>
 
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        {error && (
+          <div className="alert alert-danger text-center">{error}</div>
+        )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <InputField
-            label="Usuario"
-            id="usuario"
-            type="text"
-            value={usuario}
-            onChange={(e) => setUsuario(e.target.value)}
-            icon={<FaUser style={{ color: Colors.text_color }} />}
-            placeholder="Ingresa tu usuario"
-            color={Colors.text_color}
-          />
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label
+              htmlFor="usuario"
+              className="form-label"
+              style={{ color: Colors.text_color }}
+            >
+              Usuario
+            </label>
+            <div className="input-group">
+              <span className="input-group-text" style={{ color: Colors.text_color }}>
+                <FaUser />
+              </span>
+              <input
+                type="text"
+                className="form-control"
+                id="usuario"
+                placeholder="Ingresa tu usuario"
+                value={usuario}
+                onChange={(e) => setUsuario(e.target.value)}
+                style={{ color: Colors.text_color }}
+                required
+              />
+            </div>
+          </div>
 
-          <InputField
-            label="Contraseña"
-            id="contraseña"
-            type="password"
-            value={contraseña}
-            onChange={(e) => setContraseña(e.target.value)}
-            icon={<RiLockPasswordFill style={{ color: Colors.text_color }} />}
-            placeholder="Ingresa tu contraseña"
-            color={Colors.text_color}
-          />
+          <div className="mb-4">
+            <label
+              htmlFor="contraseña"
+              className="form-label"
+              style={{ color: Colors.text_color }}
+            >
+              Contraseña
+            </label>
+            <div className="input-group">
+              <span className="input-group-text" style={{ color: Colors.text_color }}>
+                <RiLockPasswordFill />
+              </span>
+              <input
+                type={mostrarContraseña ? "text" : "password"}
+                className="form-control"
+                id="contraseña"
+                placeholder="Ingresa tu contraseña"
+                value={contraseña}
+                onChange={(e) => setContraseña(e.target.value)}
+                style={{ color: Colors.text_color }}
+                required
+              />
+              <button
+                type="button"
+                className="input-group-text bg-transparent border-start-0"
+                onClick={() => setMostrarContraseña(!mostrarContraseña)}
+                style={{ cursor: "pointer", color: Colors.text_color }}
+              >
+                {mostrarContraseña ?  <FiEye /> : <FiEyeOff />}
+              </button>
+            </div>
+          </div>
+
 
           <button
             type="submit"
-            className="w-full py-3 px-4 rounded-md text-white font-medium hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: Colors.text_color }}
+            className="btn w-100"
+            style={{
+              backgroundColor: Colors.text_color,
+              color: Colors.primary,
+              border: "none",
+            }}
           >
             Ingresar
           </button>
