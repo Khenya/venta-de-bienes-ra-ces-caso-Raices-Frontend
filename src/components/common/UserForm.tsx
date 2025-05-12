@@ -7,14 +7,14 @@ interface FieldConfig {
   required: boolean;
   options?: {
     label: string;
-    value: string | number; 
+    value: string | number;
   }[];
 }
 
 interface UserFormProps {
   title: string;
   fields: FieldConfig[];
-  onSubmit: (values: Record<string, string>) => void;
+  onSubmit: (values: Record<string, string | number>) => void;
   onCancel?: () => void;
   submitLabel?: string;
 }
@@ -45,14 +45,15 @@ const UserForm: React.FC<UserFormProps> = ({
   const initialState = fields.reduce((acc, field) => {
     acc[field.name] = "";
     return acc;
-  }, {} as Record<string, string>);
+  }, {} as Record<string, string | number>);
 
-  const [values, setValues] = useState(initialState);
+  const [values, setValues] = useState<Record<string, string | number>>(initialState);
   const [error, setError] = useState("");
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  const handleChange = (name: string, value: string) => {
-    setValues((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (name: string, value: string | number, isNumberField: boolean = false) => {
+    const processedValue = isNumberField ? Number(value) : value;
+    setValues((prev) => ({ ...prev, [name]: processedValue }));
     setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
@@ -64,8 +65,8 @@ const UserForm: React.FC<UserFormProps> = ({
       }
     }
 
-    const password = values["password"];
-    const confirm = values["confirmPassword"];
+    const password = values["password"] as string;
+    const confirm = values["confirmPassword"] as string;
 
     if (password || confirm) {
       const validation = getPasswordValidation(password);
@@ -104,7 +105,7 @@ const UserForm: React.FC<UserFormProps> = ({
               const isTouched = touched[field.name];
               const isPasswordField = field.name === "password";
               const isConfirmField = field.name === "confirmPassword";
-              const passwordValidation = getPasswordValidation(values["password"]);
+              const passwordValidation = getPasswordValidation(values["password"] as string);
 
               let isInvalid = false;
               let showValid = false;
@@ -119,8 +120,8 @@ const UserForm: React.FC<UserFormProps> = ({
               }
 
               if (isConfirmField && isTouched) {
-                isInvalid = values["password"] !== value;
-                showValid = values["password"] === value;
+                isInvalid = (values["password"] as string) !== value;
+                showValid = (values["password"] as string) === value;
               }
 
               return (
@@ -131,13 +132,31 @@ const UserForm: React.FC<UserFormProps> = ({
                     <select
                       id={field.name}
                       className={`form-select ${isInvalid ? "is-invalid" : showValid ? "is-valid" : ""}`}
-                      value={value}
-                      onChange={(e) => handleChange(field.name, e.target.value)}
+                      value={String(value)}
+                      // En UserForm.tsx, modifica el handleChange para selects:
+                      onChange={(e) => {
+                        const raw = e.target.value;
+
+                        if (field.name === 'roleId') {
+                          // Conversión explícita a número
+                          const numericValue = Number(raw);
+
+                          if (!isNaN(numericValue)) {
+                            handleChange(field.name, numericValue);
+                          } else {
+                            console.error('No se pudo convertir a número:', raw);
+                          }
+                        } else {
+                          handleChange(field.name, raw);
+                        }
+                      }}
                       required={field.required}
                     >
                       <option value="">Seleccionar {field.label.toLowerCase()}</option>
-                      {field.options?.map((opt) => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      {field.options?.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
                       ))}
                     </select>
                   ) : (
@@ -145,7 +164,7 @@ const UserForm: React.FC<UserFormProps> = ({
                       type={field.type}
                       className={`form-control ${isInvalid ? "is-invalid" : showValid ? "is-valid" : ""}`}
                       id={field.name}
-                      value={value}
+                      value={value.toString()}
                       onChange={(e) => handleChange(field.name, e.target.value)}
                       required={field.required}
                     />

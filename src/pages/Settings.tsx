@@ -18,12 +18,13 @@ interface Role {
   name: string;
 }
 
-const PropertyPage = () => {
+const SettingsPage = () => {
   const searchParams = useSearchParams();
   const [users, setUsers] = useState<User[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,14 +41,18 @@ const PropertyPage = () => {
           role: u.role_id,
         })));
 
-        // Obtener roles
         const rolesRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/roles/`);
-        if (!rolesRes.ok) throw new Error('Error al cargar roles');
+
         const rolesData = await rolesRes.json();
-        setRoles(rolesData.map((r: any) => ({
-          id: r.id,
-          name: r.name,
-        })));
+
+        const mappedRoles = rolesData.map((r: any) => {
+          return {
+            id: Number(r.role_id),
+            name: r.name
+          };
+        });
+        setRoles(mappedRoles);
+
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Ocurrió un error desconocido');
         console.error('Error fetching data:', err);
@@ -64,7 +69,10 @@ const PropertyPage = () => {
     label: "Usuario",
     type: "select" as const,
     required: true,
-    options: users.map((u) => ({ label: u.name, value: u.id }))
+    options: users.map((u) => ({
+      label: u.name,
+      value: u.id
+    }))
   }, {
     name: "password",
     label: "Contraseña nueva",
@@ -98,7 +106,10 @@ const PropertyPage = () => {
       label: "Rol",
       type: "select" as const,
       required: true,
-      options: roles.map((r) => ({ label: r.name, value: r.id }))
+      options: roles.map((r) => ({
+        label: r.name,
+        value: r.id
+      }))
     }
   ];
 
@@ -119,6 +130,21 @@ const PropertyPage = () => {
     return 'Ocurrió un error desconocido';
   };
 
+  const showSuccessMessage = (message: string) => {
+    setSuccessMessage(message);
+    setTimeout(() => setSuccessMessage(null), 3000);
+  };
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-white">
       <Header2 />
@@ -129,11 +155,44 @@ const PropertyPage = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          position: 'relative'
         }}
         className="w-full bg-gray-50"
       >
         {loading && <div className="spinner-border text-primary" role="status"></div>}
-        {error && <div className="alert alert-danger">{error}</div>}
+
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          zIndex: 1000,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px'
+        }}>
+          {error && (
+            <div className="alert alert-danger" style={{ margin: 0 }}>
+              {error}
+              <button
+                type="button"
+                className="btn-close"
+                style={{ float: 'right' }}
+                onClick={() => setError(null)}
+              />
+            </div>
+          )}
+          {successMessage && (
+            <div className="alert alert-success" style={{ margin: 0 }}>
+              {successMessage}
+              <button
+                type="button"
+                className="btn-close"
+                style={{ float: 'right' }}
+                onClick={() => setSuccessMessage(null)}
+              />
+            </div>
+          )}
+        </div>
 
         <div className={styles.cardGrid}>
           <UserForm
@@ -141,27 +200,54 @@ const PropertyPage = () => {
             fields={fields}
             onSubmit={async (values) => {
               try {
+                if (!values.userId) {
+                  throw new Error('Por favor selecciona un usuario');
+                }
+
+                // Obtener el usuario seleccionado
                 const selectedUser = users.find(u => u.id === Number(values.userId));
                 if (!selectedUser) {
-                  throw new Error("Usuario no encontrado");
+                  throw new Error('Usuario no encontrado');
                 }
-              
+
+                // Verificación de contraseñas
+                if (values.password !== values.confirmPassword) {
+                  throw new Error('Las contraseñas no coinciden');
+                }
+
+                // Validación de fortaleza de contraseña
+                const passwordStr = String(values.password);
+                if (passwordStr.length < 8) {
+                  throw new Error('La contraseña debe tener al menos 8 caracteres');
+                }
+
+                // Construir el payload con username incluido
+                const payload = {
+                  username: selectedUser.name, // Aquí usamos el nombre del usuario
+                  password: passwordStr,
+                  confirmPassword: String(values.confirmPassword),
+                  role_id: selectedUser.role // Añadimos el role_id también por si acaso
+                };
                 const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${values.userId}`, {
                   method: 'PUT',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    username: selectedUser.name,
-                    password: values.password,
-                    rol_id: selectedUser.role
-                  })
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                  },
+                  body: JSON.stringify(payload)
                 });
-                
-                if (!res.ok) throw new Error('Error al cambiar contraseña');
-                const data = await res.json();
-                console.log("Respuesta cambiar contraseña:", data);
-                alert('Contraseña cambiada exitosamente');
+
+                if (!res.ok) {
+                  const errorData = await res.json();
+                  console.error('[DEBUG] Error del backend:', errorData);
+                  throw new Error(errorData.error || 'Error al cambiar contraseña');
+                }
+
+                showSuccessMessage('Contraseña cambiada exitosamente');
+
               } catch (err) {
-                alert(handleError(err));
+                console.error('[DEBUG] Error al cambiar contraseña:', err);
+                setError(err instanceof Error ? err.message : 'Error al cambiar contraseña');
               }
             }}
             submitLabel="Aplicar"
@@ -173,24 +259,46 @@ const PropertyPage = () => {
             fields={fields2}
             onSubmit={async (values) => {
               try {
+                // Verificación de contraseñas
+                if (values.password !== values.confirmPassword) {
+                  throw new Error('Las contraseñas no coinciden');
+                }
+
+                // Conversión explícita del roleId a número
+                const roleId = Number(values.roleId);
+                if (isNaN(roleId)) {
+                  throw new Error('El ID del rol no es un número válido');
+                }
+
+                // Verificación de que el rol existe
+                const roleExists = roles.some(r => r.id === roleId);
+                if (!roleExists) {
+                  throw new Error('El rol seleccionado no existe en la base de datos');
+                }
+                const payload = {
+                  username: String(values.username).trim(),
+                  password: String(values.password),
+                  role_id: roleId,
+                  confirmPassword: String(values.confirmPassword)
+                };
                 const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users`, {
                   method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    username: values.username,
-                    password: values.password,
-                    role_id: Number(values.roleId)
-                  })
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                  },
+                  body: JSON.stringify(payload)
                 });
-                
+
                 if (!res.ok) {
                   const errorData = await res.json();
+                  console.error('[DEBUG] Error del backend:', errorData);
                   throw new Error(errorData.error || 'Error al crear usuario');
                 }
-                
+
                 const data = await res.json();
-                alert('Usuario creado exitosamente');
-                
+                showSuccessMessage('Usuario creado exitosamente');
+
                 const usersRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/`);
                 const usersData = await usersRes.json();
                 setUsers(usersData.map((u: any) => ({
@@ -198,8 +306,10 @@ const PropertyPage = () => {
                   name: u.username,
                   role: u.role_id,
                 })));
+
               } catch (err) {
-                alert(handleError(err));
+                console.error('[DEBUG] Error al crear usuario:', err);
+                setError(err instanceof Error ? err.message : 'Error al crear usuario');
               }
             }}
             submitLabel="Crear"
@@ -214,16 +324,15 @@ const PropertyPage = () => {
                 const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${values.userId}`, {
                   method: 'DELETE'
                 });
-                
+
                 if (!res.ok) throw new Error('Error al eliminar usuario');
-                
+
                 const data = await res.json();
-                console.log("Respuesta eliminar usuario:", data);
-                alert('Usuario eliminado exitosamente');
-                
+                showSuccessMessage('Usuario eliminado exitosamente');
+
                 setUsers(users.filter(u => u.id !== Number(values.userId)));
               } catch (err) {
-                alert(handleError(err));
+                setError(handleError(err));
               }
             }}
             submitLabel="Eliminar"
@@ -235,4 +344,4 @@ const PropertyPage = () => {
   );
 };
 
-export default withAuth(PropertyPage);
+export default withAuth(SettingsPage);
