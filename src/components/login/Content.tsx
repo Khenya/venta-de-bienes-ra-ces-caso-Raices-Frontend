@@ -126,7 +126,6 @@ const LoginForm = () => {
             </div>
           </div>
 
-
           <button
             type="submit"
             className="btn w-100"

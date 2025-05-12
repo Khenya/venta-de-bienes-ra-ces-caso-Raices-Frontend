@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { TbLogout } from "react-icons/tb";
 import { IoIosNotificationsOutline, IoIosNotifications } from "react-icons/io";
+import { IoSettingsOutline } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 import logo from "../../assets/Logo.png";
 import Modal from "./Modal";
@@ -25,6 +27,8 @@ const Header2: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -112,6 +116,23 @@ const Header2: React.FC = () => {
     }
   };
 
+  const getUserRole = (): string | null => {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+  
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role;
+    } catch {
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const role = getUserRole();
+    if (role === "admin") setIsAdmin(true);
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = async (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -156,40 +177,51 @@ const Header2: React.FC = () => {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "16px", marginRight: "40px" }}>
-            <a href="/Plano" style={{ color: Colors.primary, marginRight: "15px", textDecoration: "none" }}>Plano</a>
-            <a href="/List" style={{ color: Colors.primary, marginRight: "15px", textDecoration: "none" }}>Listado</a>
-            <div style={{ position: 'relative', marginRight: '15px' }}>
-              {unreadCount > 0 ? (
-                <IoIosNotifications 
+            {/* {isAdmin && (  
+              <a href="/Dashboard" style={{ color: Colors.primary, textDecoration: "none" }}>Dashboard</a> 
+            )} */}
+            <a href="/Plano" style={{ color: Colors.primary, textDecoration: "none" }}>Plano</a>
+            <a href="/List" style={{ color: Colors.primary, textDecoration: "none" }}>Listado</a>
+            {isAdmin && (  
+              <IoSettingsOutline  
+                onClick={() => router.push("/Settings")} 
+                style={{ color: Colors.primary, cursor: "pointer", fontSize: "1.25rem" }} 
+              />            
+            )}
+            {!isAdmin && (     
+              <div style={{ position: 'relative' }}>
+                {unreadCount > 0 ? (
+                  <IoIosNotifications 
                   onClick={() => setShowNotificationModal(true)} 
                   style={{ color: Colors.primary, cursor: "pointer", fontSize: "1.25rem" }} 
-                />
-              ) : (
-                <IoIosNotificationsOutline 
+                  />
+                ) : (
+                  <IoIosNotificationsOutline 
                   onClick={() => setShowNotificationModal(true)} 
                   style={{ color: Colors.primary, cursor: "pointer", fontSize: "1.25rem" }} 
-                />
-              )}
-              {unreadCount > 0 && (
-                <span style={{
-                  position: 'absolute',
-                  top: '-8px',
-                  right: '-8px',
-                  backgroundColor: '#E53517',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '18px',
-                  height: '18px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '12px',
-                  fontWeight: 'bold'
-                }}>
-                  {unreadCount}
-                </span>
-              )}
-            </div>
+                  />
+                )}
+                {unreadCount > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '-8px',
+                    right: '-8px',
+                    backgroundColor: '#E53517',
+                    color: 'white',
+                    borderRadius: '50%',
+                    width: '18px',
+                    height: '18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    fontWeight: 'bold'
+                  }}>
+                    {unreadCount}
+                  </span>
+                )}
+              </div>
+            )} 
             <button 
               style={{ 
                 color: Colors.primary, 

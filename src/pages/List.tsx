@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { FiPlus } from "react-icons/fi";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export interface Property {
   property_id: number;
@@ -72,23 +73,26 @@ const List = () => {
   };
   
   return (
-    <div className="min-h-screen w-full bg-gray-50">
+    <div className="min-vh-100 w-100 d-flex flex-column" style={{ backgroundColor: "#f8f9fa" }}>
       <Header2 />
-      <main style={{ 
-        paddingTop: "40px", 
-        minHeight: "calc(100vh - 80px)",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center"
-      }}>
-        <div className="w-full max-w-5xl bg-white p-8 rounded-lg shadow-lg">          
+      <main className="flex-grow-1 d-flex flex-column align-items-center justify-content-start" style={{ height: 'calc(100vh - 100px)', paddingTop: '24px', overflow: 'auto' }}>
+        <div className="w-100" style={{ maxWidth: "1280px", padding: "2rem" }}>        
           <div style={styles.buttonsContainer}>
             <h1 style={{ color: Colors.brown}}>
               Listado de Inmuebles Nueva Esperanza
             </h1>
           </div>
           <div style={styles.buttonsContainer}>
-            <button style={styles.confirmButton} onClick={exportToExcel}>
+            <button 
+              type="button" 
+              className="btn" 
+              style={{ 
+                backgroundColor: Colors.text_color,
+                borderColor: Colors.text_color,
+                color: Colors.primary 
+              }}
+              onClick={exportToExcel}
+            >
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <RiDownloadLine className="text-lg" />
                 Descargar
@@ -96,7 +100,13 @@ const List = () => {
             </button>
 
             <button 
-              style={styles.cancelButton}
+              type="button" 
+              className="btn" 
+              style={{ 
+                backgroundColor: Colors.primary,
+                borderColor: Colors.text_color,
+                color: Colors.text_color 
+              }}
               onClick={() => setIsFilterModalOpen(true)}
             >
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -107,7 +117,13 @@ const List = () => {
             
             {isAdmin && (
               <button 
-                style={styles.confirmButton}
+                type="button" 
+                className="btn" 
+                style={{ 
+                  backgroundColor: Colors.text_color,
+                  borderColor: Colors.text_color,
+                  color: Colors.primary 
+                }}
                 onClick={() => setIsNewPropertyModalOpen(true)}
               >
                 <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>                  
