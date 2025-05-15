@@ -3,27 +3,26 @@
 import React, { useState, FormEvent, useEffect } from "react";
 import { RxCross2 } from "react-icons/rx";
 import axios from "axios";
-
 import { Colors } from "@/app/config/theme/Colors";
-import styles from "@/app/config/theme/styles";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface NewCustomerModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
-  propertyId: number; 
+  propertyId: number;
 }
 
-const NewCustomerModal: React.FC<NewCustomerModalProps> = ({ 
-  isOpen, 
-  onClose, 
+const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
+  isOpen,
+  onClose,
   onSave,
-  propertyId 
+  propertyId
 }) => {
-  const [name, setName] = useState<string>("");
-  const [ci, setCi] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [name, setName] = useState("");
+  const [ci, setCi] = useState("");
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState("");
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -50,27 +49,26 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
       name: name.trim(),
       phone: phone.trim() || null,
       property_id: propertyId
-    };    
+    };
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/customer`,
         requestData,
         {
-          headers: { 
+          headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
           },
           withCredentials: true,
         }
       );
-      
       onSave();
       onClose();
     } catch (error: any) {
       console.error("Error al crear cliente:", error);
       setError(
-        error.response?.data?.message || 
+        error.response?.data?.message ||
         "Error al guardar el cliente. Por favor intente nuevamente."
       );
     }
@@ -79,75 +77,87 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
   if (!isClient || !isOpen) return null;
 
   return (
-    <div style={styles.overlay}>
-      <div style={{ ...styles.modal, width: "500px", padding: "30px" }}>
-        <div style={styles.closeIcon} onClick={onClose}>
-          <RxCross2 style={{ color: Colors.text_color, fontSize: "24px", cursor: "pointer" }} />
+    <div className="modal d-flex align-items-center justify-content-center show" style={{ display: "flex", backgroundColor: "rgba(0,0,0,0.5)" }}>
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header" style={{ borderBottom: `2px solid ${Colors.text_color}` }}>
+            <h5 className="modal-title" style={{ color: Colors.text_color }}>Agregar un nuevo adjudicatario</h5>
+            <button type="button" className="btn-close" onClick={onClose} />
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="modal-body">
+              {error && (
+                <div className="alert alert-danger">
+                  {error}
+                  <button type="button" className="btn-close float-end" onClick={() => setError("")}></button>
+                </div>
+              )}
+
+              {/* Nombre */}
+              <div className="mb-3">
+                <label className="form-label" style={{ color: Colors.text_color }}>Nombre*</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  style={{ borderColor: Colors.text_color }}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* CI + Celular */}
+              <div className="row">
+                <div className="col-md-6 mb-3">
+                  <label className="form-label" style={{ color: Colors.text_color }}>CI*</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    style={{ borderColor: Colors.text_color }}
+                    value={ci}
+                    onChange={(e) => setCi(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="col-md-6 mb-3">
+                  <label className="form-label" style={{ color: Colors.text_color }}>Celular</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    style={{ borderColor: Colors.text_color }}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={onClose}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="btn"
+                style={{
+                  backgroundColor: Colors.text_color,
+                  color: Colors.primary,
+                  opacity: !ci || !name ? 0.6 : 1,
+                  cursor: !ci || !name ? "not-allowed" : "pointer"
+                }}
+                disabled={!ci || !name}
+              >
+                Guardar
+              </button>
+            </div>
+
+          </form>
         </div>
-
-        <h1 style={styles.titel}>Agregar un nuevo adjudicatario</h1>
-
-        {error && (
-          <div style={{ 
-            color: 'red', 
-            marginBottom: '15px',
-            padding: '10px',
-            backgroundColor: '#FFEBEE',
-            borderRadius: '4px'
-          }}>
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <div style={styles.formGroup}>
-            <label style={styles.formLabel}>Nombre*</label>
-            <input
-              type="text"
-              style={styles.formInput}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          
-          <div style={styles.formGroup}>
-            <label style={styles.formLabel}>Carnet de identidad*</label>
-            <input
-              type="number"
-              style={styles.formInput}
-              value={ci}
-              onChange={(e) => setCi(e.target.value)}
-              required
-            />
-          </div>
-          
-          <div style={styles.formGroup}>
-            <label style={styles.formLabel}>Celular</label>
-            <input
-              type="number" 
-              style={styles.formInput}
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </div>
-          
-          <div style={styles.buttonsContainer}>
-            <button 
-              type="button"
-              onClick={onClose} 
-              style={styles.cancelButton}
-            >
-              Cancelar
-            </button>
-            <button 
-              type="submit"
-              style={styles.confirmButton}
-            >
-              Guardar
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   );

@@ -36,7 +36,7 @@ const AdjudicatorCard: React.FC<AdjudicatorCardProps> = ({ onAddClick, customer 
         <div className="space-y-2">
           <p><span className="font-semibold">Nombre:</span> {customer.name}</p>
           <p><span className="font-semibold">CI:</span> {customer.ci}</p>
-          <p><span className="font-semibold">Teléfono:</span> {customer.phone}</p>
+          <p><span className="font-semibold">Celular:</span> {customer.phone}</p>
         </div>
       ) : (
         isAdmin && (
