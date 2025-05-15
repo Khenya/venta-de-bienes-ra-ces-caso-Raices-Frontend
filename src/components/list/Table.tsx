@@ -123,7 +123,7 @@ const Table: React.FC<TableProps> = ({
                 <th style={styles.tableCell}>LOTE</th>
                 <th style={styles.tableCell}>DUEÑO</th>
                 <th style={styles.tableCell}>ESTADO DE PAGO</th>
-                <th style={styles.tableCell}>PRECIO (DOLARES)</th>
+                <th style={styles.tableCell}>PRECIO (USD)</th>
                 <th style={styles.tableCell}>ACCIONES</th>
               </tr>
             </thead>

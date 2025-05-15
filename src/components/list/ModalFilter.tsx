@@ -67,7 +67,7 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
             >
               <option value="ESTADO">ESTADO</option>
               {isAdmin && <option value="DUEÑO">DUEÑO</option>}
-              <option value="PRECIO">PRECIO (DOLARES)</option>
+              <option value="PRECIO">PRECIO (USD)</option>
               <option value="MANZANO">MANZANO</option>
               <option value="LOTE">LOTE</option>
             </select>

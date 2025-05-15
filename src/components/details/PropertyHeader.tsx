@@ -18,7 +18,7 @@ const PropertyHeader: React.FC<Props> = ({ property }) => (
     <div className={styles.propertyGrid}>
       <div>Manzano: {property.manzano}</div>
       <div>Lote: {property.batch}</div>
-      <div>METROS CUADRADOS: {property.meters}</div>
+      <div>METRAJE: {property.meters} (m²)</div>
       <div>UBICACIÓN: {property.location}</div>
       <div>N° DE INMUEBLE: {property.property_number}</div>
       <div>N° DE FOLIO: {property.folio_number}</div>

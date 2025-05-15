@@ -44,7 +44,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ onEditClick, property }) =>
       </div>
       <ul>
         <li><span>Estado: </span><span>{property.state}</span></li>
-        <li><span>Precio (DÓLARES): </span><span>{property.price}</span></li>
+        <li><span>Precio (USD): </span><span>{property.price}</span></li>
       </ul>
     </div>
   );
