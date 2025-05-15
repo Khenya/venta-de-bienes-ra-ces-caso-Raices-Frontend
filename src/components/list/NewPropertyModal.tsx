@@ -174,11 +174,11 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
             </div>
 
             <div className="modal-footer">
-              <button type="submit" className="btn" style={{ backgroundColor: Colors.text_color, color: Colors.primary }} disabled={!isFormValid()}>
-                Guardar
-              </button>
               <button type="button" className="btn btn-outline-secondary" onClick={onClose}>
                 Cancelar
+              </button>
+              <button type="submit" className="btn" style={{ backgroundColor: Colors.text_color, color: Colors.primary }} disabled={!isFormValid()}>
+                Guardar
               </button>
             </div>
           </form>
