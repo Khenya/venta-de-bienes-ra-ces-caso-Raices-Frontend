@@ -1,3 +1,5 @@
+'use client';
+
 import Header2 from "@/components/common/Header_2";
 import Table from "@/components/list/Table";
 import styles from "@/app/config/theme/styles";
@@ -35,11 +37,13 @@ const List = () => {
 
   const handleSaveProperty = () => {
     setIsNewPropertyModalOpen(false);
+    window.location.reload(); 
   };
+
   const getUserRole = (): string | null => {
     const token = localStorage.getItem("token");
     if (!token) return null;
-  
+
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       return payload.role;
@@ -47,12 +51,12 @@ const List = () => {
       return null;
     }
   };
-  
+
   useEffect(() => {
     const role = getUserRole();
     if (role === "admin") setIsAdmin(true);
   }, []);
-  
+
   const exportToExcel = () => {
     const data = properties.map((p, index) => ({
       "#": index + 1,
@@ -62,34 +66,34 @@ const List = () => {
       "Estado de Pago": p.state,
       "Precio (USD)": p.price,
     }));
-  
+
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Propiedades");
-  
+
     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
     saveAs(blob, "Listado_Inmuebles.xlsx");
   };
-  
+
   return (
     <div className="min-vh-100 w-100 d-flex flex-column" style={{ backgroundColor: "#f8f9fa" }}>
       <Header2 />
       <main className="flex-grow-1 d-flex flex-column align-items-center justify-content-start" style={{ height: 'calc(100vh - 100px)', paddingTop: '24px', overflow: 'auto' }}>
-        <div className="w-100" style={{ maxWidth: "1280px", padding: "2rem" }}>        
+        <div className="w-100" style={{ maxWidth: "1280px", padding: "2rem" }}>
           <div style={styles.buttonsContainer}>
-            <h1 style={{ color: Colors.brown}}>
+            <h1 style={{ color: Colors.brown }}>
               Listado de Inmuebles Nueva Esperanza
             </h1>
           </div>
           <div style={styles.buttonsContainer}>
-            <button 
-              type="button" 
-              className="btn" 
-              style={{ 
+            <button
+              type="button"
+              className="btn"
+              style={{
                 backgroundColor: Colors.text_color,
                 borderColor: Colors.text_color,
-                color: Colors.primary 
+                color: Colors.primary
               }}
               onClick={exportToExcel}
             >
@@ -99,13 +103,13 @@ const List = () => {
               </span>
             </button>
 
-            <button 
-              type="button" 
-              className="btn" 
-              style={{ 
+            <button
+              type="button"
+              className="btn"
+              style={{
                 backgroundColor: Colors.primary,
                 borderColor: Colors.text_color,
-                color: Colors.text_color 
+                color: Colors.text_color
               }}
               onClick={() => setIsFilterModalOpen(true)}
             >
@@ -114,26 +118,26 @@ const List = () => {
                 Filtros
               </span>
             </button>
-            
+
             {isAdmin && (
-              <button 
-                type="button" 
-                className="btn" 
-                style={{ 
+              <button
+                type="button"
+                className="btn"
+                style={{
                   backgroundColor: Colors.text_color,
                   borderColor: Colors.text_color,
-                  color: Colors.primary 
+                  color: Colors.primary
                 }}
                 onClick={() => setIsNewPropertyModalOpen(true)}
               >
-                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>                  
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <FiPlus className="text-lg" />
                   Nuevo inmueble
                 </span>
               </button>
             )}
           </div>
-          
+
           <Table
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
@@ -166,13 +170,13 @@ const List = () => {
           </div>
         </div>
       </main>
-      
-      <NewPropertyModal 
+
+      <NewPropertyModal
         isOpen={isNewPropertyModalOpen}
         onClose={() => setIsNewPropertyModalOpen(false)}
         onSave={handleSaveProperty}
       />
-      <ModalFilter 
+      <ModalFilter
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
         onSave={handleSaveProperty}
