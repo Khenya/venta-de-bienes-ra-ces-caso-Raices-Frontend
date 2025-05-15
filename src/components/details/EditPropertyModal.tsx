@@ -84,7 +84,7 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, 
           </div>
 
           <div style={styles.formGroup}>
-            <label style={styles.formLabel}>PRECIO (DOLARES)*</label>
+            <label style={styles.formLabel}>PRECIO (USD)*</label>
             <input
               type="number"
               style={styles.formInput}
