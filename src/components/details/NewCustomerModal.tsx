@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, FormEvent, useEffect } from "react";
-import { RxCross2 } from "react-icons/rx";
 import axios from "axios";
-import { Colors } from "@/app/config/theme/Colors";
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { Colors } from "@/app/config/theme/Colors";
 
 interface NewCustomerModalProps {
   isOpen: boolean;
@@ -94,7 +94,6 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
                 </div>
               )}
 
-              {/* Nombre */}
               <div className="mb-3">
                 <label className="form-label" style={{ color: Colors.text_color }}>Nombre*</label>
                 <input
@@ -107,7 +106,6 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
                 />
               </div>
 
-              {/* CI + Celular */}
               <div className="row">
                 <div className="col-md-6 mb-3">
                   <label className="form-label" style={{ color: Colors.text_color }}>CI*</label>

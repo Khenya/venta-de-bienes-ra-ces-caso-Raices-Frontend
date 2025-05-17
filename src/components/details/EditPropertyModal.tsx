@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useState, FormEvent, useEffect } from "react";
-import { RxCross2 } from "react-icons/rx";
 import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { Colors } from "@/app/config/theme/Colors";
-import styles from "@/app/config/theme/styles";
 
 interface EditPropertyModalProps {
   isOpen: boolean;
@@ -14,7 +13,12 @@ interface EditPropertyModalProps {
   propertyId: number;
 }
 
-const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, onSave, propertyId }) => {
+const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
+  isOpen,
+  onClose,
+  onSave,
+  propertyId
+}) => {
   const [state, setState] = useState("LIBRE");
   const [price, setPrice] = useState<number | "">("");
   const [isClient, setIsClient] = useState(false);
@@ -32,12 +36,11 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, 
     const requestData = {
       state,
       price: price !== "" ? Number(price) : null,
-      
     };
 
     try {
       await axios.patch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property/${propertyId}/state`,            
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property/${propertyId}/state`,
         requestData,
         {
           headers: {
@@ -46,7 +49,7 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, 
           },
           withCredentials: true,
         }
-      );          
+      );
       onSave();
       onClose();
     } catch (error: any) {
@@ -57,55 +60,68 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({ isOpen, onClose, 
   if (!isClient || !isOpen) return null;
 
   return (
-    <div style={styles.overlay}>
-      <div style={{ ...styles.modal, width: "500px", padding: "30px" }}>
-        <div style={styles.closeIcon} onClick={onClose}>
-          <RxCross2 style={{ color: Colors.text_color, fontSize: "24px", cursor: "pointer" }} />
+    <div className="modal d-flex align-items-center justify-content-center show" style={{ display: "flex", backgroundColor: "rgba(0,0,0,0.5)" }}>
+      <div className="modal-dialog modal-lg">
+        <div className="modal-content">
+          <div className="modal-header" style={{ borderBottom: `2px solid ${Colors.text_color}` }}>
+            <h5 className="modal-title" style={{ color: Colors.text_color }}>Editar el inmueble</h5>
+            <button type="button" className="btn-close" onClick={onClose} />
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            <div className="modal-body">
+              <div className="row">
+                <div className="col-md-6 mb-3">
+                  <label className="form-label" style={{ color: Colors.text_color }}>Estado*</label>
+                  <select
+                    className="form-select"
+                    style={{ borderColor: Colors.text_color }}
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    required
+                  >
+                    <option value="LIBRE">LIBRE</option>
+                    <option value="RESERVADO">RESERVADO</option>
+                    <option value="RETRASADO">RETRASADO</option>
+                    <option value="CANCELADO">CANCELADO</option>
+                    <option value="PAGANDO">PAGANDO</option>
+                    <option value="CADUCADO">CADUCADO</option>
+                  </select>
+                </div>
+
+                <div className="col-md-6 mb-3">
+                  <label className="form-label" style={{ color: Colors.text_color }}>Precio (USD)*</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    style={{ borderColor: Colors.text_color }}
+                    value={price}
+                    onChange={(e) => setPrice(Number(e.target.value))}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                style={{ borderColor: Colors.text_color, color: Colors.text_color }}
+                onClick={onClose}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="btn"
+                style={{ backgroundColor: Colors.text_color, color: Colors.primary }}
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
         </div>
-
-        <h1 style={styles.titel}>Editar el inmueble</h1>
-
-        <form onSubmit={handleSubmit}>
-          <div style={styles.formGroup}>
-            <label style={styles.formLabel}>ESTADO*</label>
-            <select 
-              style={styles.formInput} 
-              value={state} 
-              onChange={(e) => setState(e.target.value)}
-              required
-            >
-              <option value="LIBRE">LIBRE</option>
-              <option value="RESERVADO">RESERVADO</option>
-              <option value="RETRASADO">RETRASADO</option>
-              <option value="CANCELADO">CANCELADO</option>
-              <option value="PAGANDO">PAGANDO</option>
-              <option value="CADUCADO">CADUCADO</option>
-            </select>
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.formLabel}>PRECIO (USD)*</label>
-            <input
-              type="number"
-              style={styles.formInput}
-              value={price}
-              onChange={(e) => setPrice(Number(e.target.value))}
-              required
-            />
-          </div>
-
-          <div style={styles.buttonsContainer}>
-            <button onClick={onClose} style={styles.cancelButton}>
-              Cancelar
-            </button>
-            <button 
-              type="submit"
-              style={styles.confirmButton}
-            >
-              Guardar
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   );
