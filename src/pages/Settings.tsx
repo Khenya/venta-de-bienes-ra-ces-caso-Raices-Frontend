@@ -92,6 +92,15 @@ const SettingsPage = () => {
       type: "text" as const,
       required: true
     }, {
+      name: "roleId",
+      label: "Rol",
+      type: "select" as const,
+      required: true,
+      options: roles.map((r) => ({
+        label: r.name,
+        value: r.id
+      }))
+    }, {
       name: "password",
       label: "Contraseña",
       type: "password" as const,
@@ -101,15 +110,6 @@ const SettingsPage = () => {
       label: "Confirma la contraseña",
       type: "password" as const,
       required: true
-    }, {
-      name: "roleId",
-      label: "Rol",
-      type: "select" as const,
-      required: true,
-      options: roles.map((r) => ({
-        label: r.name,
-        value: r.id
-      }))
     }
   ];
 
@@ -196,65 +196,6 @@ const SettingsPage = () => {
 
         <div className={styles.cardGrid}>
           <UserForm
-            title="Cambiar contraseña de un usuario"
-            fields={fields}
-            onSubmit={async (values) => {
-              try {
-                if (!values.userId) {
-                  throw new Error('Por favor selecciona un usuario');
-                }
-
-                // Obtener el usuario seleccionado
-                const selectedUser = users.find(u => u.id === Number(values.userId));
-                if (!selectedUser) {
-                  throw new Error('Usuario no encontrado');
-                }
-
-                // Verificación de contraseñas
-                if (values.password !== values.confirmPassword) {
-                  throw new Error('Las contraseñas no coinciden');
-                }
-
-                // Validación de fortaleza de contraseña
-                const passwordStr = String(values.password);
-                if (passwordStr.length < 8) {
-                  throw new Error('La contraseña debe tener al menos 8 caracteres');
-                }
-
-                // Construir el payload con username incluido
-                const payload = {
-                  username: selectedUser.name, // Aquí usamos el nombre del usuario
-                  password: passwordStr,
-                  confirmPassword: String(values.confirmPassword),
-                  role_id: selectedUser.role // Añadimos el role_id también por si acaso
-                };
-                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${values.userId}`, {
-                  method: 'PUT',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                  },
-                  body: JSON.stringify(payload)
-                });
-
-                if (!res.ok) {
-                  const errorData = await res.json();
-                  console.error('[DEBUG] Error del backend:', errorData);
-                  throw new Error(errorData.error || 'Error al cambiar contraseña');
-                }
-
-                showSuccessMessage('Contraseña cambiada exitosamente');
-
-              } catch (err) {
-                console.error('[DEBUG] Error al cambiar contraseña:', err);
-                setError(err instanceof Error ? err.message : 'Error al cambiar contraseña');
-              }
-            }}
-            submitLabel="Aplicar"
-            onCancel={() => console.log("Cancelar cambio")}
-          />
-
-          <UserForm
             title="Crear un nuevo usuario"
             fields={fields2}
             onSubmit={async (values) => {
@@ -314,6 +255,65 @@ const SettingsPage = () => {
             }}
             submitLabel="Crear"
             onCancel={() => console.log("Cancelar creación")}
+          />
+          
+          <UserForm
+            title="Cambiar contraseña de un usuario"
+            fields={fields}
+            onSubmit={async (values) => {
+              try {
+                if (!values.userId) {
+                  throw new Error('Por favor selecciona un usuario');
+                }
+
+                // Obtener el usuario seleccionado
+                const selectedUser = users.find(u => u.id === Number(values.userId));
+                if (!selectedUser) {
+                  throw new Error('Usuario no encontrado');
+                }
+
+                // Verificación de contraseñas
+                if (values.password !== values.confirmPassword) {
+                  throw new Error('Las contraseñas no coinciden');
+                }
+
+                // Validación de fortaleza de contraseña
+                const passwordStr = String(values.password);
+                if (passwordStr.length < 8) {
+                  throw new Error('La contraseña debe tener al menos 8 caracteres');
+                }
+
+                // Construir el payload con username incluido
+                const payload = {
+                  username: selectedUser.name, // Aquí usamos el nombre del usuario
+                  password: passwordStr,
+                  confirmPassword: String(values.confirmPassword),
+                  role_id: selectedUser.role // Añadimos el role_id también por si acaso
+                };
+                const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${values.userId}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                  },
+                  body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                  const errorData = await res.json();
+                  console.error('[DEBUG] Error del backend:', errorData);
+                  throw new Error(errorData.error || 'Error al cambiar contraseña');
+                }
+
+                showSuccessMessage('Contraseña cambiada exitosamente');
+
+              } catch (err) {
+                console.error('[DEBUG] Error al cambiar contraseña:', err);
+                setError(err instanceof Error ? err.message : 'Error al cambiar contraseña');
+              }
+            }}
+            submitLabel="Aplicar"
+            onCancel={() => console.log("Cancelar cambio")}
           />
 
           <UserForm

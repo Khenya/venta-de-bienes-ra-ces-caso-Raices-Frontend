@@ -57,6 +57,12 @@ const UserForm: React.FC<UserFormProps> = ({
     setTouched((prev) => ({ ...prev, [name]: true }));
   };
 
+  const resetForm = () => {
+  setValues(initialState);
+  setTouched({});
+  setError("");
+};
+
   const handleSubmit = () => {
     for (const field of fields) {
       if (field.required && !values[field.name]) {
@@ -83,6 +89,7 @@ const UserForm: React.FC<UserFormProps> = ({
 
     setError("");
     onSubmit(values);
+    resetForm();
   };
 
   const handleCancel = () => {
