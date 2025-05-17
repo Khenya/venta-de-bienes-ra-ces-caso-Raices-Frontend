@@ -9,6 +9,9 @@ import { Colors } from "@/app/config/theme/Colors";
 interface Property {
   state: string;
   price: number;
+  property_number: number;
+  folio_number: number;
+  testimony_number: number;
 }
 
 interface PropertyCardProps {
@@ -45,6 +48,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ onEditClick, property }) =>
       <ul>
         <li><span>Estado: </span><span>{property.state}</span></li>
         <li><span>Precio (USD): </span><span>{property.price}</span></li>
+        <li><div>N° DE INMUEBLE: {property.property_number}</div></li>
+        <li><div>N° Registró DDRR: {property.folio_number}</div></li>
+        <li><span>Número de Protocolizacion: </span><span>{property.testimony_number}</span></li>
       </ul>
     </div>
   );

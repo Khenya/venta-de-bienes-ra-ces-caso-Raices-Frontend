@@ -20,8 +20,6 @@ const PropertyHeader: React.FC<Props> = ({ property }) => (
       <div>Lote: {property.batch}</div>
       <div>METRAJE: {property.meters} (m²)</div>
       <div>UBICACIÓN: {property.location}</div>
-      <div>N° DE INMUEBLE: {property.property_number}</div>
-      <div>N° DE FOLIO: {property.folio_number}</div>
     </div>
   </div>
 );
