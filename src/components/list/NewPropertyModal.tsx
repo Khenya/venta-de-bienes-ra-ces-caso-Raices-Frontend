@@ -26,7 +26,7 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
   const [folioNumber, setFolioNumber] = useState<number | "">("");
   const [propertyNumber, setPropertyNumber] = useState<number | "">("");
   const [testimonyNumber, setTestimonyNumber] = useState("");
-  const [selectedOwner, setSelectedOwner] = useState("");
+  const [selectedOwners, setSelectedOwners] = useState<string[]>([]);
   const [isClient, setIsClient] = useState(false);
 
   const owners: Owner[] = [
@@ -47,11 +47,16 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
     setFolioNumber("");
     setPropertyNumber("");
     setTestimonyNumber("");
-    setSelectedOwner("");
+    setSelectedOwners([]);
   };
 
   const isFormValid = () =>
-    selectedOwner && batch !== "" && manzano !== "" && location && meters !== "" && price !== "";
+    selectedOwners.length > 0 &&
+    batch !== "" &&
+    manzano !== "" &&
+    location &&
+    meters !== "" &&
+    price !== "";
 
   useEffect(() => {
     setIsClient(true);
@@ -62,9 +67,12 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
     const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
     if (!token) return;
 
+    const allOwnerNames = owners.map(o => o.fullName);
+    const resolvedOwners = selectedOwners.includes("TODOS") ? allOwnerNames : selectedOwners;
+
     const requestData = {
       state,
-      owner_name: selectedOwner,
+      owner_names: resolvedOwners,
       batch: Number(batch),
       manzano: Number(manzano),
       location,
@@ -106,18 +114,57 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
             <div className="modal-body">
 
               <div className="row">
-                <div className="col-md-6 mb-3">
-                  <label className="form-label" style={{ color: Colors.text_color }}>Propietario*</label>
-                  <select className="form-select border" style={{ borderColor: Colors.text_color }} value={selectedOwner} onChange={(e) => setSelectedOwner(e.target.value)} required>
-                    <option value="">Seleccione un propietario</option>
+                <div className="col-md-12 mb-3">
+                  <label className="form-label" style={{ color: Colors.text_color }}>Propietarios*</label>
+                  <div className="row">
+                    <div className="col-md-4">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="owner-TODOS"
+                          checked={selectedOwners.length === owners.length}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedOwners(owners.map(o => o.fullName));
+                            } else {
+                              setSelectedOwners([]);
+                            }
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor="owner-TODOS">
+                          TODOS
+                        </label>
+                      </div>
+                    </div>
+
                     {owners.map((owner) => (
-                      <option key={owner.fullName} value={owner.fullName}>
-                        {owner.displayName}
-                      </option>
+                      <div className="col-md-4" key={owner.fullName}>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={`owner-${owner.fullName}`}
+                            value={owner.fullName}
+                            checked={selectedOwners.includes(owner.fullName)}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setSelectedOwners((prev) =>
+                                prev.includes(value)
+                                  ? prev.filter((v) => v !== value)
+                                  : [...prev, value]
+                              );
+                            }}
+                          />
+                          <label className="form-check-label" htmlFor={`owner-${owner.fullName}`}>
+                            {owner.displayName}
+                          </label>
+                        </div>
+                      </div>
                     ))}
-                  </select>
+                  </div>
                 </div>
-                <div className="col-md-6 mb-3">
+                <div className="mb-3">
                   <label className="form-label" style={{ color: Colors.text_color }}>Estado*</label>
                   <select className="form-select border" style={{ borderColor: Colors.text_color }} value={state} onChange={(e) => setState(e.target.value)} required>
                     <option value="LIBRE">LIBRE</option>
