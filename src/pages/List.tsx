@@ -37,7 +37,6 @@ const List = () => {
 
   const handleSaveProperty = () => {
     setIsNewPropertyModalOpen(false);
-    window.location.reload(); 
   };
 
   const getUserRole = (): string | null => {
