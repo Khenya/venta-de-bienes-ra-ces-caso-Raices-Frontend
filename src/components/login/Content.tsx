@@ -28,7 +28,7 @@ const LoginForm = () => {
       }
 
       localStorage.setItem("token", response.data.token);
-      window.location.href = "/Plano";
+      window.location.href = "/Dashboard";
     } catch {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
     }

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Row, Col, Spinner } from 'react-bootstrap';
+import { Row, Col, Spinner } from 'react-bootstrap';
 import { FaHouseChimney, FaTag, FaSackDollar } from 'react-icons/fa6';
 import { PiSealCheckFill } from 'react-icons/pi';
 import 'bootstrap/dist/css/bootstrap.min.css';

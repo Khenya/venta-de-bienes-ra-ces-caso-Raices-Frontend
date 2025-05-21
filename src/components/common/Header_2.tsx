@@ -177,9 +177,9 @@ const Header2: React.FC = () => {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: "16px", marginRight: "40px" }}>
-            {/* {isAdmin && (  
+            {isAdmin && (  
               <a href="/Dashboard" style={{ color: Colors.primary, textDecoration: "none" }}>Dashboard</a> 
-            )} */}
+            )}
             <a href="/Plano" style={{ color: Colors.primary, textDecoration: "none" }}>Plano</a>
             <a href="/List" style={{ color: Colors.primary, textDecoration: "none" }}>Listado</a>
             {isAdmin && (  
