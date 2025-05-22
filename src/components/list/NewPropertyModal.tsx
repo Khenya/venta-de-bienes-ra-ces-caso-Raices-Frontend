@@ -80,7 +80,7 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
       price: Number(price),
       folio_number: folioNumber || null,
       property_number: propertyNumber || null,
-      testimony_number: testimonyNumber || null,
+      testimony_numbre: testimonyNumber || null,
     };
 
     try {

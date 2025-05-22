@@ -11,7 +11,7 @@ interface Property {
   price: number;
   property_number: number;
   folio_number: number;
-  testimony_number: number;
+  testimony_number: string;
 }
 
 interface PropertyCardProps {

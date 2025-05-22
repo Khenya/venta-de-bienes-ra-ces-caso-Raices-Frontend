@@ -19,7 +19,7 @@ const PropertyPage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCustomerModal, setShowCustomerModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const fetchProperty = async () => {
     if (!id) return;
     const token = localStorage.getItem("token");
@@ -38,12 +38,12 @@ const PropertyPage = () => {
 
       if (!res.ok) throw new Error("No se pudo obtener la propiedad");
       const data = await res.json();
-      
+
       const combinedObservations = data.observations && data.observation_dates
         ? [{
-            note: data.observations,
-            date: data.observation_dates
-          }]
+          note: data.observations,
+          date: data.observation_dates
+        }]
         : [];
 
       const customer = data.customer_name ? {
@@ -55,14 +55,15 @@ const PropertyPage = () => {
       setProperty({
         ...data,
         observations: combinedObservations,
-        customer
+        customer,
+        testimony_number: data.testimony_numbre 
       });
     } catch (err: any) {
       setError(err.message || "Error al cargar la propiedad");
       console.error("Error fetching property:", err);
-  } finally {
-    setIsLoading(false);
-  }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -88,13 +89,13 @@ const PropertyPage = () => {
           <div className={styles.cardGrid}>
             {property && (
               <>
-                <PropertyCard 
-                  onEditClick={() => setShowEditModal(true)} 
-                  property={property} 
+                <PropertyCard
+                  onEditClick={() => setShowEditModal(true)}
+                  property={property}
                 />
-                <AdjudicatorCard 
-                  onAddClick={() => setShowCustomerModal(true)} 
-                  customer={property.customer} 
+                <AdjudicatorCard
+                  onAddClick={() => setShowCustomerModal(true)}
+                  customer={property.customer}
                 />
                 <ObservationsCard propertyId={property.property_id} />
               </>
@@ -121,8 +122,8 @@ const PropertyPage = () => {
           onClose={() => setShowEditModal(false)}
           onSave={() => {
             setShowEditModal(false);
-            fetchProperty(); 
-          }}          
+            fetchProperty();
+          }}
           propertyId={property.property_id}
         />
       )}

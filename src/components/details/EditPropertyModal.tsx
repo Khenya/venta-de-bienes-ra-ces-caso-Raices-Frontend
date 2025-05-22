@@ -21,6 +21,9 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
 }) => {
   const [state, setState] = useState("LIBRE");
   const [price, setPrice] = useState<number | "">("");
+  const [propertyNumber, setPropertyNumber] = useState<number | "">("");
+  const [folioNumber, setFolioNumber] = useState<number | "">("");
+  const [testimonyNumber, setTestimonyNumber] = useState<string | "">("");
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -36,6 +39,9 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
     const requestData = {
       state,
       price: price !== "" ? Number(price) : null,
+      property_number: propertyNumber !== "" ? Number(propertyNumber) : null,
+      folio_number: folioNumber !== "" ? Number(folioNumber) : null,
+      testimony_numbre: testimonyNumber || null
     };
 
     try {
@@ -100,6 +106,38 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                     required
                   />
                 </div>
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label" style={{ color: Colors.text_color }}>N° DE INMUEBLE</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  style={{ borderColor: Colors.text_color }}
+                  value={propertyNumber}
+                  onChange={(e) => setPropertyNumber(Number(e.target.value))}
+                />
+              </div>
+
+              <div className="col-md-6 mb-3">
+                <label className="form-label" style={{ color: Colors.text_color }}>N° Registró DDRR</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  style={{ borderColor: Colors.text_color }}
+                  value={folioNumber}
+                  onChange={(e) => setFolioNumber(Number(e.target.value))}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label" style={{ color: Colors.text_color }}>Número de Protocolizacion</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  style={{ borderColor: Colors.text_color }}
+                  value={testimonyNumber}
+                  onChange={(e) => setTestimonyNumber(e.target.value)}
+                />
               </div>
             </div>
 
