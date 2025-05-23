@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { jwtDecode } from "jwt-decode";
 
 import api from "../../utils/api";
 import { Colors } from "@/app/config/theme/Colors";
@@ -27,8 +28,18 @@ const LoginForm = () => {
         throw new Error("No se recibió un token válido");
       }
 
-      localStorage.setItem("token", response.data.token);
-      window.location.href = "/Dashboard";
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+
+      const decoded: any = jwtDecode(token);
+      const role = decoded?.role;
+
+      if (role === "admin") {
+        window.location.href = "/Dashboard";
+      } else {
+        window.location.href = "/Plano";
+      }
+
     } catch {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
     }
@@ -121,7 +132,7 @@ const LoginForm = () => {
                 onClick={() => setMostrarContraseña(!mostrarContraseña)}
                 style={{ cursor: "pointer", color: Colors.text_color }}
               >
-                {mostrarContraseña ?  <FiEye /> : <FiEyeOff />}
+                {mostrarContraseña ? <FiEye /> : <FiEyeOff />}
               </button>
             </div>
           </div>
