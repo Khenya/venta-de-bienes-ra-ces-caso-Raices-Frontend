@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 import TableRow from "./TableRow";
 import styles from "@/app/config/theme/styles";
@@ -16,7 +16,7 @@ interface Property {
 interface DecodedToken {
   userId: number;
   role: string;
-  username: string; 
+  username: string;
 }
 
 interface TableProps {
@@ -28,8 +28,8 @@ interface TableProps {
   setProperties: (props: Property[]) => void;
 }
 
-const Table: React.FC<TableProps> = ({ 
-  currentPage, 
+const Table: React.FC<TableProps> = ({
+  currentPage,
   itemsPerPage,
   onTotalItemsChange,
   filter,
@@ -45,47 +45,50 @@ const Table: React.FC<TableProps> = ({
         setError("No hay token disponible. Inicia sesión.");
         return;
       }
-  
+
       try {
         const decoded: DecodedToken = jwtDecode(token);
-        let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties`;
-  
-        if (decoded.role !== "admin" && !filter) {
-          url += `?owner=${encodeURIComponent(decoded.username)}`;
+        let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/filter`;
+        const params: Record<string, string> = {};
+
+        const isAdmin = decoded.role === "admin";
+
+        if (!isAdmin) {
+          params.owner = decoded.username;
         }
-  
+
         if (filter) {
-          const { field, value } = filter;
-          switch (field) {
+          switch (filter.field) {
             case "DUEÑO":
-              url += `?owner=${encodeURIComponent(value)}`;
+              params.owner = filter.value;
               break;
             case "ESTADO":
-              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/state/${value}`;
+              params.state = filter.value;
               break;
             case "PRECIO":
-              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/price/${value}`;
+              params.price = filter.value;
               break;
             case "MANZANO":
-              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/manzano/${Number(value)}`;
+              params.manzano = filter.value;
               break;
             case "LOTE":
-              url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/batch/${Number(value)}`;
-              break;
-            default:
+              params.batch = filter.value;
               break;
           }
         }
 
+        const queryString = new URLSearchParams(params).toString();
+        url += `?${queryString}`;
+
         const headers = new Headers();
         headers.set("Authorization", token);
-  
+
         const response = await fetch(url, {
           method: "GET",
           headers,
           credentials: "include",
         });
-  
+
         if (!response.ok) {
           throw new Error(
             response.status === 401
@@ -93,7 +96,7 @@ const Table: React.FC<TableProps> = ({
               : "Error al obtener las propiedades."
           );
         }
-  
+
         const data: Property[] = await response.json();
         setProperties(data);
         onTotalItemsChange(data.length);
@@ -101,7 +104,7 @@ const Table: React.FC<TableProps> = ({
         setError((err as Error).message);
       }
     };
-  
+
     fetchProperties();
   }, [filter, onTotalItemsChange, setProperties]);
 
@@ -130,9 +133,9 @@ const Table: React.FC<TableProps> = ({
             <tbody>
               {currentItems.length > 0 ? (
                 currentItems.map((property: Property, index: number) => (
-                  <TableRow 
-                    key={property.property_id} 
-                    property={property} 
+                  <TableRow
+                    key={property.property_id}
+                    property={property}
                   />
                 ))
               ) : (
