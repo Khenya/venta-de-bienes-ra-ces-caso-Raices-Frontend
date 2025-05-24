@@ -23,7 +23,7 @@ interface TableProps {
   currentPage: number;
   itemsPerPage: number;
   onTotalItemsChange: (total: number) => void;
-  filter: { field: string; value: string } | null;
+  filter: Record<string, string>;
   properties: Property[];
   setProperties: (props: Property[]) => void;
 }
@@ -48,37 +48,16 @@ const Table: React.FC<TableProps> = ({
 
       try {
         const decoded: DecodedToken = jwtDecode(token);
-        let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/filter`;
-        const params: Record<string, string> = {};
-
         const isAdmin = decoded.role === "admin";
+
+        const params: Record<string, string> = { ...filter };
 
         if (!isAdmin) {
           params.owner = decoded.username;
         }
 
-        if (filter) {
-          switch (filter.field) {
-            case "DUEÑO":
-              params.owner = filter.value;
-              break;
-            case "ESTADO":
-              params.state = filter.value;
-              break;
-            case "PRECIO":
-              params.price = filter.value;
-              break;
-            case "MANZANO":
-              params.manzano = filter.value;
-              break;
-            case "LOTE":
-              params.batch = filter.value;
-              break;
-          }
-        }
-
         const queryString = new URLSearchParams(params).toString();
-        url += `?${queryString}`;
+        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/filter?${queryString}`;
 
         const headers = new Headers();
         headers.set("Authorization", token);

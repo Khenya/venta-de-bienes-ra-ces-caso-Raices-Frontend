@@ -11,16 +11,16 @@ interface ModalFilterProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: () => void;
-  onApplyFilter: (filter: { field: string; value: string }) => void;
+  onApplyFilter: (filters: Record<string, string>) => void;
 }
 
 const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onApplyFilter }) => {
-  const [selectedField, setSelectedField] = useState<string>("ESTADO");
-  const [ownerOption, setOwnerOption] = useState<string>("Aydee Choque");
-  const [textValue, setTextValue] = useState<string>("");
-  const [stateOption, setStateOption] = useState<string>("LIBRE");
+  const [ownerOption, setOwnerOption] = useState<string>("");
+  const [stateOption, setStateOption] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [manzano, setManzano] = useState<string>("");
+  const [batch, setBatch] = useState<string>("");
   const [isAdmin, setIsAdmin] = useState(false);
-  const [validated, setValidated] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -32,28 +32,29 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    event.stopPropagation();
+    const filters: Record<string, string> = {};
 
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      setValidated(true);
-      return;
-    }
+    if (ownerOption) filters.owner = ownerOption;
+    if (stateOption) filters.state = stateOption;
+    if (price) filters.price = price;
+    if (manzano) filters.manzano = manzano;
+    if (batch) filters.batch = batch;
 
-    const filterValue = selectedField === "DUEÑO"
-      ? ownerOption
-      : selectedField === "ESTADO"
-        ? stateOption
-        : textValue;
-
-    onApplyFilter({ field: selectedField, value: filterValue });
+    onApplyFilter(filters);
     onSave();
+
+    setOwnerOption("");
+    setStateOption("");
+    setPrice("");
+    setManzano("");
+    setBatch("");
+
     onClose();
   };
 
   return (
     <Modal show={isOpen} onHide={onClose} centered className="mt-5">
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         <div className="modal-content">
           <div className="modal-header" style={{ borderBottom: `2px solid ${Colors.text_color}` }}>
             <h5 className="modal-title" style={{ color: Colors.text_color }}>Filtros</h5>
@@ -61,55 +62,31 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
           </div>
           <div className="modal-body">
             <Form.Group className="mb-3">
-              <Form.Label style={{ color: Colors.text_color }}>Seleccione el campo para el filtro*</Form.Label>
+              <Form.Label style={{ color: Colors.text_color }}>Estado</Form.Label>
               <Form.Select
                 style={{ borderColor: Colors.text_color }}
-                value={selectedField}
-                onChange={(e) => {
-                  const field = e.target.value;
-                  setSelectedField(field);
-                  setTextValue("");
-                  setOwnerOption("Aydee Choque");
-                  setStateOption("LIBRE");
-                }}
-                required
+                value={stateOption}
+                onChange={(e) => setStateOption(e.target.value)}
               >
-                <option value="ESTADO">ESTADO</option>
-                {isAdmin && <option value="DUEÑO">DUEÑO</option>}
-                <option value="PRECIO">PRECIO (USD)</option>
-                <option value="MANZANO">MANZANO</option>
-                <option value="LOTE">LOTE</option>
+                <option value="">-- Sin filtro --</option>
+                <option value="LIBRE">LIBRE</option>
+                <option value="CANCELADO">CANCELADO</option>
+                <option value="RESERVADO">RESERVADO</option>
+                <option value="RETRASADO">RETRASADO</option>
+                <option value="PAGANDO">PAGANDO</option>
+                <option value="CADUCADO">CADUCADO</option>
               </Form.Select>
             </Form.Group>
 
-            {selectedField === "ESTADO" && (
+            {isAdmin && (
               <Form.Group className="mb-3">
-                <Form.Label style={{ color: Colors.text_color }}>Seleccione un estado:</Form.Label>
-                <Form.Select
-                  style={{ borderColor: Colors.text_color }}
-                  value={stateOption}
-                  onChange={(e) => setStateOption(e.target.value)}
-                  required
-                >
-                  <option value="LIBRE">LIBRE</option>
-                  <option value="CANCELADO">CANCELADO</option>
-                  <option value="RESERVADO">RESERVADO</option>
-                  <option value="RETRASADO">RETRASADO</option>
-                  <option value="PAGANDO">PAGANDO</option>
-                  <option value="CADUCADO">CADUCADO</option>
-                </Form.Select>
-              </Form.Group>
-            )}
-
-            {selectedField === "DUEÑO" && isAdmin && (
-              <Form.Group className="mb-3">
-                <Form.Label style={{ color: Colors.text_color }}>Seleccione un dueño:</Form.Label>
+                <Form.Label style={{ color: Colors.text_color }}>Dueño</Form.Label>
                 <Form.Select
                   style={{ borderColor: Colors.text_color }}
                   value={ownerOption}
                   onChange={(e) => setOwnerOption(e.target.value)}
-                  required
                 >
+                  <option value="">-- Sin filtro --</option>
                   <option value="Aydee Choque">Aydee Choque</option>
                   <option value="German Choque">German Choque</option>
                   <option value="Nancy Choque">Nancy Choque</option>
@@ -119,18 +96,41 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
               </Form.Group>
             )}
 
-            {(selectedField === "PRECIO" || selectedField === "MANZANO" || selectedField === "LOTE") && (
-              <Form.Group className="mb-3">
-                <Form.Label style={{ color: Colors.text_color }}>Ingrese el valor:</Form.Label>
-                <Form.Control
-                  type="number"
-                  style={{ borderColor: Colors.text_color }}
-                  value={textValue}
-                  onChange={(e) => setTextValue(e.target.value)}
-                  required
-                />
-              </Form.Group>
-            )}
+            <Form.Group className="mb-3">
+              <Form.Label style={{ color: Colors.text_color }}>Precio (USD)</Form.Label>
+              <Form.Control
+                type="number"
+                style={{ borderColor: Colors.text_color }}
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </Form.Group>
+            <div className="row">
+              <div className="col-md-6 mb-3">
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ color: Colors.text_color }}>Manzano</Form.Label>
+                  <Form.Control
+                    type="number"
+                    style={{ borderColor: Colors.text_color }}
+                    value={manzano}
+                    onChange={(e) => setManzano(e.target.value)}
+                  />
+                </Form.Group>
+              </div>
+              <div className="col-md-6 mb-3">
+
+                <Form.Group className="mb-3">
+                  <Form.Label style={{ color: Colors.text_color }}>Lote</Form.Label>
+                  <Form.Control
+                    type="number"
+                    style={{ borderColor: Colors.text_color }}
+                    value={batch}
+                    onChange={(e) => setBatch(e.target.value)}
+                  />
+                </Form.Group>
+              </div>
+            </div>
           </div>
 
           <div className="modal-footer">
@@ -146,7 +146,7 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
               type="submit"
               style={{ backgroundColor: Colors.text_color, color: Colors.primary }}
             >
-              Guardar
+              Aplicar
             </Button>
           </div>
         </div>

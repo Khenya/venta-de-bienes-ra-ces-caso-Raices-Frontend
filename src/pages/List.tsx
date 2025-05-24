@@ -32,7 +32,7 @@ const List = () => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [filter, setFilter] = useState<{ field: string; value: string } | null>(null);
+  const [filter, setFilter] = useState<Record<string, string>>({});
   const [properties, setProperties] = useState<Property[]>([]);
 
   const handleSaveProperty = () => {
