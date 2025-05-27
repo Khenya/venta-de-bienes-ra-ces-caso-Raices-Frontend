@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 interface PropertyCountData {
   total: string;
   libres: string;
-  pagando: string;
+  liquidando: string;
   cancelado: string;
 }
 
@@ -52,7 +52,10 @@ const PropertyStatsCard: React.FC = () => {
     );
   }
 
-  if (!data) return <p>Error al cargar los datos.</p>;
+  if (!data) return
+  <Spinner animation="border" role="status" style={{ color: '#000' }}>
+    <span className="visually-hidden">Loading...</span>
+  </Spinner>;
 
   const cardStyle = {
     display: 'flex',
@@ -76,52 +79,51 @@ const PropertyStatsCard: React.FC = () => {
   const valueStyle = {
     fontSize: '32px',
     fontWeight: 'bold',
-    color: '#007bff',
     display: 'flex',
     alignItems: 'center',
   };
 
   return (
-    <div className="container my-4">
-      <Row className="g-4">
-        <Col md={3}>
+    <div className="margin ">
+      <Row className="g-2">
+        <Col md={6}>
           <div style={cardStyle}>
             <div>
               <div style={valueStyle}>
-                <FaHouseChimney style={iconStyle} />
+                <FaHouseChimney style={{ ...iconStyle, color: '#8C7771' }} />
                 {data.total}
               </div>
               <div style={labelStyle}>Total de propiedades</div>
             </div>
           </div>
         </Col>
-        <Col md={3}>
+        <Col md={6}>
           <div style={cardStyle}>
             <div>
-              <div style={{...valueStyle, color: 'green' }}>
-                <FaTag style={iconStyle} />
+              <div style={valueStyle}>
+                <FaTag style={{ ...iconStyle, color: '#A08A7D' }} />
                 {data.libres}
               </div>
               <div style={labelStyle}>Libres</div>
             </div>
           </div>
         </Col>
-        <Col md={3}>
+        <Col md={6}>
           <div style={cardStyle}>
             <div>
-              <div style={{...valueStyle, color: 'orange' }}>
-                <FaSackDollar style={iconStyle} />
-                {data.pagando}
+              <div style={valueStyle}>
+                <FaSackDollar style={{ ...iconStyle, color: '#BBAF94' }} />
+                {data.liquidando}
               </div>
-              <div style={labelStyle}>Pagando</div>
+              <div style={labelStyle}>Liquilando</div>
             </div>
           </div>
         </Col>
-        <Col md={3}>
+        <Col md={6}>
           <div style={cardStyle}>
             <div>
-              <div style={{...valueStyle, color: 'red' }}>
-                <PiSealCheckFill style={iconStyle} />
+              <div style={valueStyle}>
+                <PiSealCheckFill style={{ ...iconStyle, color: '#D6D1BC' }} />
                 {data.cancelado}
               </div>
               <div style={labelStyle}>Cancelados</div>

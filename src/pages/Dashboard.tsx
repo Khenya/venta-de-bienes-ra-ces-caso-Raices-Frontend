@@ -1,8 +1,11 @@
+'use client';
+
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Spinner from 'react-bootstrap/Spinner';
 
 import PropertyStatsCard from "@/components/dashboard/PropertyStatsCard";
 import BarChartByOwner from "@/components/dashboard/BarChartByOwner";
@@ -53,14 +56,12 @@ const PropertyPieChart = () => {
               label: 'Cantidad de inmuebles',
               data: values,
               backgroundColor: [
-                '#36A2EB',
-                '#FF6384',
-                '#FFCE56',
-                '#8BC34A',
-                '#FF9800',
-                '#9C27B0',
-                '#607D8B',
-                '#F44336',
+                '#8C7771',
+                '#A08A7D',
+                '#BBAF94',
+                '#D6D1BC',
+                '#ECE9DB',
+                '#F8F6F0',
               ],
               borderWidth: 1,
             },
@@ -74,7 +75,10 @@ const PropertyPieChart = () => {
     fetchStats();
   }, []);
 
-  if (!chartData) return <p>Cargando gráfico...</p>;
+  if (!chartData) return
+  <Spinner animation="border" role="status" style={{ color: '#000' }}>
+    <span className="visually-hidden">Loading...</span>
+  </Spinner>;
 
   return (
     <div
@@ -87,22 +91,22 @@ const PropertyPieChart = () => {
     >
       <Header2 />
       <div className="container mt-4">
-        <PropertyStatsCard />
-
-        <div className="row mt-4 g-4">
-          <div className="col-md-6">
-            <div style={chartCardStyle}>
-              <Pie data={chartData} />
-            </div>
-          </div>
-          <div className="col-md-6">
-            <div style={chartCardStyle}>
-              <BarChartByOwner />
+        <div className="row justify-content-center g-4">
+          <div className="col-lg-10">
+            <div className="row g-4">
+              <div className="col-md-6">
+                <div style={chartCardStyle}>
+                  <Pie data={chartData} />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <PropertyStatsCard />
+                <BarChartByOwner />
+              </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   );
 };
