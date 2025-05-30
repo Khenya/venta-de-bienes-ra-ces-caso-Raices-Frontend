@@ -47,22 +47,6 @@ jobs:
       - name: 🚀 Aplicar infraestructura
         run: terraform apply -auto-approve
 
-      - name: 📤 Subir archivo .env al servidor
-        run: |
-          EC2_IP=$(terraform output -raw ec2_public_ip)
-          echo "NEXT_PUBLIC_BACKEND_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }}" > .env
-          ssh -i id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_IP "mkdir -p /home/ec2-user/app"
-          scp -i id_rsa -o StrictHostKeyChecking=no .env ec2-user@$EC2_IP:/home/ec2-user/app/.env
-
-      - name: ▶️ Iniciar frontend en segundo plano
-        run: |
-          EC2_IP=$(terraform output -raw ec2_public_ip)
-          ssh -i id_rsa -o StrictHostKeyChecking=no ec2-user@$EC2_IP << 'EOF'
-            cd /home/ec2-user/app
-            export $(cat .env | xargs)
-            nohup npm run dev > out.log 2>&1 &
-          EOF
-
       - name: 🌐 Mostrar URL pública
         run: |
           echo "Tu app está corriendo en:"
