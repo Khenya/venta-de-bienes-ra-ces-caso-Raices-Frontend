@@ -9,7 +9,7 @@ variable "public_key" {
 
 resource "aws_security_group" "react_sg" {
   name        = "react-frontend-sg"
-  description = "Security group for React frontend"
+  description = "SG for React frontend"
 
   ingress {
     description = "SSH"
@@ -20,7 +20,7 @@ resource "aws_security_group" "react_sg" {
   }
 
   ingress {
-    description = "React Dev Server"
+    description = "React dev port"
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"
@@ -28,7 +28,7 @@ resource "aws_security_group" "react_sg" {
   }
 
   ingress {
-    description = "HTTP (Next.js build)"
+    description = "HTTP (build output)"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -69,7 +69,7 @@ resource "aws_instance" "react_server" {
     inline = [
       "sudo yum update -y",
       "sudo yum install -y git",
-      "curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -",
+      "curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -",
       "sudo yum install -y nodejs",
       "git clone https://github.com/Khenya/venta-de-bienes-ra-ces-caso-Raices-Frontend /home/ec2-user/app",
       "cd /home/ec2-user/app",
