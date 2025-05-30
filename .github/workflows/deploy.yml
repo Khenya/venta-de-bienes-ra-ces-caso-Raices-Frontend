@@ -1,0 +1,53 @@
+name: Desplegar frontend en EC2
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_notes:
+        type: string
+        required: true
+        default: 'Frontend Build'
+        description: 'Notas de la versión'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: 🔐 Guardar clave SSH privada
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > id_rsa
+          chmod 600 id_rsa
+
+      - name: ⚙️ Instalar Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.10.0
+
+      - name: 🔐 Configurar credenciales AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: 📄 Crear archivo de variables para Terraform
+        run: |
+          echo 'public_key = "${{ secrets.PUBLIC_KEY }}"' > terraform.auto.tfvars
+
+      - name: 📦 Inicializar Terraform
+        run: terraform init
+
+      - name: 🔍 Plan de Terraform
+        run: terraform plan
+
+      - name: 🚀 Aplicar infraestructura
+        run: terraform apply -auto-approve
+
+      - name: 🌐 Mostrar URL pública
+        run: |
+          echo "Frontend desplegado en:"
+          terraform output application_url
