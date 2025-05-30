@@ -36,7 +36,10 @@ jobs:
 
       - name: 📄 Crear archivo de variables para Terraform
         run: |
-          echo 'public_key = "${{ secrets.PUBLIC_KEY }}"' > terraform.auto.tfvars
+         cat <<EOF > terraform.auto.tfvars
+         public_key = "${{ secrets.PUBLIC_KEY }}"
+         EOF
+
 
       - name: 📦 Inicializar Terraform
         run: terraform init
