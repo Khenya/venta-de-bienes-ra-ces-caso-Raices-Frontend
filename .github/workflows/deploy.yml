@@ -35,10 +35,7 @@ jobs:
           aws-region: us-east-1
 
       - name: 📄 Crear archivo de variables para Terraform
-        run: |
-         cat <<EOF > terraform.auto.tfvars
-         public_key = "${{ secrets.PUBLIC_KEY }}"
-         EOF
+        run: echo "public_key = \"${{ secrets.PUBLIC_KEY }}\"" > terraform.auto.tfvars
 
 
       - name: 📦 Inicializar Terraform
