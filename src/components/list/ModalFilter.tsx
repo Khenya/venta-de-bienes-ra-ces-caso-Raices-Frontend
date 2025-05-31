@@ -73,8 +73,10 @@ const ModalFilter: React.FC<ModalFilterProps> = ({ isOpen, onClose, onSave, onAp
                 <option value="CANCELADO">CANCELADO</option>
                 <option value="RESERVADO">RESERVADO</option>
                 <option value="RETRASADO">RETRASADO</option>
-                <option value="PAGANDO">PAGANDO</option>
+                <option value="LIQUIDANDO">LIQUIDANDO</option>
                 <option value="CADUCADO">CADUCADO</option>
+                <option value="RESERVADO">RESERVADO</option>
+                <option value="ALQUILADO">ALQUILADO</option>
               </Form.Select>
             </Form.Group>
 

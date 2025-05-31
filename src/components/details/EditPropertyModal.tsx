@@ -90,8 +90,10 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                     <option value="RESERVADO">RESERVADO</option>
                     <option value="RETRASADO">RETRASADO</option>
                     <option value="CANCELADO">CANCELADO</option>
-                    <option value="PAGANDO">PAGANDO</option>
+                    <option value="LIQUIDANDO">LIQUIDANDO</option>
                     <option value="CADUCADO">CADUCADO</option>
+                    <option value="RESERVADO">RESERVADO</option>
+                    <option value="ALQUILADO">ALQUILADO</option>
                   </select>
                 </div>
 
@@ -107,7 +109,7 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                   />
                 </div>
               </div>
-              <div className="col-md-6 mb-3">
+              <div className="mb-3">
                 <label className="form-label" style={{ color: Colors.text_color }}>N° DE INMUEBLE</label>
                 <input
                   type="number"
@@ -117,27 +119,29 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                   onChange={(e) => setPropertyNumber(Number(e.target.value))}
                 />
               </div>
+              <div className="row">
 
-              <div className="col-md-6 mb-3">
-                <label className="form-label" style={{ color: Colors.text_color }}>N° Registró DDRR</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  style={{ borderColor: Colors.text_color }}
-                  value={folioNumber}
-                  onChange={(e) => setFolioNumber(Number(e.target.value))}
-                />
-              </div>
+                <div className="col-md-6 mb-3">
+                  <label className="form-label" style={{ color: Colors.text_color }}>N° Registró DDRR</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    style={{ borderColor: Colors.text_color }}
+                    value={folioNumber}
+                    onChange={(e) => setFolioNumber(Number(e.target.value))}
+                  />
+                </div>
 
-              <div className="mb-3">
-                <label className="form-label" style={{ color: Colors.text_color }}>Número de Protocolizacion</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  style={{ borderColor: Colors.text_color }}
-                  value={testimonyNumber}
-                  onChange={(e) => setTestimonyNumber(e.target.value)}
-                />
+                <div className="col-md-6 mb-3">
+                  <label className="form-label" style={{ color: Colors.text_color }}>Número de Protocolizacion</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    style={{ borderColor: Colors.text_color }}
+                    value={testimonyNumber}
+                    onChange={(e) => setTestimonyNumber(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
 

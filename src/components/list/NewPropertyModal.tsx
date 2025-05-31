@@ -171,8 +171,10 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
                     <option value="RESERVADO">RESERVADO</option>
                     <option value="RETRASADO">RETRASADO</option>
                     <option value="CANCELADO">CANCELADO</option>
-                    <option value="PAGANDO">PAGANDO</option>
+                    <option value="LIQUIDANDO">LIQUIDANDO</option>
                     <option value="CADUCADO">CADUCADO</option>
+                    <option value="RESERVADO">RESERVADO</option>
+                    <option value="ALQUILADO">ALQUILADO</option>
                   </select>
                 </div>
               </div>
