@@ -188,7 +188,7 @@ const Header2: React.FC = () => {
                 style={{ color: Colors.primary, cursor: "pointer", fontSize: "1.25rem" }} 
               />            
             )}
-            {!isAdmin && (     
+          
               <div style={{ position: 'relative' }}>
                 {unreadCount > 0 ? (
                   <IoIosNotifications 
@@ -221,7 +221,6 @@ const Header2: React.FC = () => {
                   </span>
                 )}
               </div>
-            )} 
             <button 
               style={{ 
                 color: Colors.primary, 
