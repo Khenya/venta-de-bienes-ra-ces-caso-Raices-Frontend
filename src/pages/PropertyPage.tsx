@@ -10,6 +10,19 @@ import ObservationsCard from '@/components/details/ObservationsCard';
 import styles from '../app/config/theme/Card.module.css';
 import EditPrperty from '@/components/details/EditPropertyModal';
 import NewCustomerModal from "@/components/details/NewCustomerModal";
+import CreditForm from "@/components/details/CreditForm";
+import CreditCard from "@/components/details/CreditCard";
+
+interface Installment {
+  installment_id: number;
+  credit_id: number;
+  amount: number;
+  installment_number: number;
+  payment_date: string;
+  paid_date: string | null;
+  interest: string;
+  status: 'pagada' | 'vencida' | 'pendiente';
+}
 
 const PropertyPage = () => {
   const searchParams = useSearchParams();
@@ -19,7 +32,11 @@ const PropertyPage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCustomerModal, setShowCustomerModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedInstallment, setSelectedInstallment] = useState<Installment | null>(null);
 
+  const handleInstallmentClick = (installment: Installment) => {
+    setSelectedInstallment(installment);
+  };
   const fetchProperty = async () => {
     if (!id) return;
     const token = localStorage.getItem("token");
@@ -56,7 +73,7 @@ const PropertyPage = () => {
         ...data,
         observations: combinedObservations,
         customer,
-        testimony_number: data.testimony_numbre 
+        testimony_number: data.testimony_numbre
       });
     } catch (err: any) {
       setError(err.message || "Error al cargar la propiedad");
@@ -89,13 +106,18 @@ const PropertyPage = () => {
           <div className={styles.cardGrid}>
             {property && (
               <>
-                <PropertyCard
-                  onEditClick={() => setShowEditModal(true)}
-                  property={property}
-                />
-                <AdjudicatorCard
-                  onAddClick={() => setShowCustomerModal(true)}
-                  customer={property.customer}
+                <div>
+                  <PropertyCard
+                    onEditClick={() => setShowEditModal(true)}
+                    property={property}
+                  />
+                  <AdjudicatorCard
+                    onAddClick={() => setShowCustomerModal(true)}
+                    customer={property.customer}
+                  />
+                </div>
+                <CreditCard propertyId={property.property_id}
+                  onInstallmentClick={handleInstallmentClick}
                 />
                 <ObservationsCard propertyId={property.property_id} />
               </>
