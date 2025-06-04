@@ -10,7 +10,6 @@ import ObservationsCard from '@/components/details/ObservationsCard';
 import styles from '../app/config/theme/Card.module.css';
 import EditPrperty from '@/components/details/EditPropertyModal';
 import NewCustomerModal from "@/components/details/NewCustomerModal";
-import CreditForm from "@/components/details/CreditForm";
 import CreditCard from "@/components/details/CreditCard";
 
 interface Installment {
@@ -31,12 +30,14 @@ const PropertyPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCustomerModal, setShowCustomerModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedInstallment, setSelectedInstallment] = useState<Installment | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0); // Para forzar re-render
 
   const handleInstallmentClick = (installment: Installment) => {
     setSelectedInstallment(installment);
   };
+
   const fetchProperty = async () => {
     if (!id) return;
     const token = localStorage.getItem("token");
@@ -46,6 +47,7 @@ const PropertyPage = () => {
     }
 
     try {
+      setIsLoading(true);
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/properties/${id}`, {
         headers: {
           Authorization: token
@@ -75,6 +77,7 @@ const PropertyPage = () => {
         customer,
         testimony_number: data.testimony_numbre
       });
+      setError(null);
     } catch (err: any) {
       setError(err.message || "Error al cargar la propiedad");
       console.error("Error fetching property:", err);
@@ -83,9 +86,75 @@ const PropertyPage = () => {
     }
   };
 
+  const handleCreditCreated = () => {
+    // Incrementar refreshKey para forzar re-render del CreditCard
+    setRefreshKey(prev => prev + 1);
+    // También podrías recargar la propiedad si es necesario
+    // fetchProperty();
+  };
+
   useEffect(() => {
     fetchProperty();
   }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen overflow-x-hidden bg-white">
+        <Header2 />
+        <main
+          style={{
+            paddingTop: "100px",
+            minHeight: "calc(100vh - 80px)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <div className="text-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Cargando...</span>
+            </div>
+            <p className="mt-2">Cargando propiedad...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen overflow-x-hidden bg-white">
+        <Header2 />
+        <main
+          style={{
+            paddingTop: "100px",
+            minHeight: "calc(100vh - 80px)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <div className="text-center">
+            <div className="alert alert-danger">
+              <h4>Error</h4>
+              <p>{error}</p>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  setError(null);
+                  fetchProperty();
+                }}
+              >
+                Reintentar
+              </button>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-white">
@@ -107,17 +176,24 @@ const PropertyPage = () => {
             {property && (
               <>
                 <div>
-                  <PropertyCard
-                    onEditClick={() => setShowEditModal(true)}
-                    property={property}
-                  />
-                  <AdjudicatorCard
-                    onAddClick={() => setShowCustomerModal(true)}
-                    customer={property.customer}
-                  />
+                  <div className="mb-4">
+                    <PropertyCard
+                      onEditClick={() => setShowEditModal(true)}
+                      property={property}
+                    />
+                  </div>
+                  <div>
+                    <AdjudicatorCard
+                      onAddClick={() => setShowCustomerModal(true)}
+                      customer={property.customer}
+                    />
+                  </div>
                 </div>
-                <CreditCard propertyId={property.property_id}
+                <CreditCard
+                  key={refreshKey}
+                  propertyId={property.property_id}
                   onInstallmentClick={handleInstallmentClick}
+                  onCreditCreated={handleCreditCreated}
                 />
                 <ObservationsCard propertyId={property.property_id} />
               </>
@@ -126,6 +202,7 @@ const PropertyPage = () => {
         </div>
       </main>
 
+      {/* Modales */}
       <NewCustomerModal
         isOpen={showCustomerModal}
         onClose={() => {
@@ -138,6 +215,7 @@ const PropertyPage = () => {
         }}
         propertyId={property?.property_id}
       />
+
       {property && (
         <EditPrperty
           isOpen={showEditModal}
