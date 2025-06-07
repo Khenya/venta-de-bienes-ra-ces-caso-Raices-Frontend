@@ -115,7 +115,7 @@ const PropertyStatsCard: React.FC = () => {
                 <FaSackDollar style={{ ...iconStyle, color: '#BBAF94' }} />
                 {data.liquidando}
               </div>
-              <div style={labelStyle}>Liquilando</div>
+              <div style={labelStyle}>Liquidando</div>
             </div>
           </div>
         </Col>
