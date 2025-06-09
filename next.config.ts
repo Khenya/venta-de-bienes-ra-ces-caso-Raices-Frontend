@@ -14,7 +14,17 @@ const nextConfig = {
         destination: `${apiUrl}/api/:path*`
       }
     ];
-  }
+  },
+
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'planos-raises.s3.us-east-1.amazonaws.com',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;

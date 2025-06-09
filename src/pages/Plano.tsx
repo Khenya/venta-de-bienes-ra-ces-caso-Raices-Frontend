@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Image from "next/image";
 import withAuth from '../hoc/WithAuth';
 import Header2 from "@/components/common/Header_2";
-import map from "../assets/map.png";
+import styles from "@/app/config/theme/styles"; // Asegúrate de tener este import
 
 import { CiSquarePlus } from "react-icons/ci";
 import { useEffect, useRef, useState } from "react";
@@ -17,6 +17,23 @@ const PlanoPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
+  const [maps, setMaps] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchMaps = async (page: number) => {
+    try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload/maps?page=${page}`);
+      setMaps(res.data.maps);
+      setTotalPages(res.data.totalPages);
+    } catch (err) {
+      setStatusMsg("Error al cargar mapas");
+    }
+  };
+
+  useEffect(() => {
+    fetchMaps(currentPage);
+  }, [currentPage]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -55,6 +72,7 @@ const PlanoPage = () => {
 
       if (res.status === 200) {
         setStatusMsg("Mapa subido exitosamente");
+        fetchMaps(currentPage);
       } else {
         setStatusMsg("Error al subir el archivo");
       }
@@ -81,11 +99,17 @@ const PlanoPage = () => {
           alignItems: "center",
         }}
       >
-        <Image
-          src={map}
-          alt="map"
-          style={{ width: "100%", height: "100%", objectFit: "contain" }}
-        />
+        {maps.length > 0 ? (
+          <Image
+            src={maps[0]}
+            alt="map"
+            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            width={1920}
+            height={1080}
+          />
+        ) : (
+          <p className="text-muted">No hay mapas disponibles</p>
+        )}
 
         {isAdmin && (
           <>
@@ -109,6 +133,29 @@ const PlanoPage = () => {
               onChange={handleFileChange}
               style={{ display: "none" }}
             />
+
+            {/* PAGINADO ESTILO CONSISTENTE */}
+            <div style={{ ...styles.buttonsContainerNext, position: "absolute", bottom: "24px", left: "24px" }}>
+              <button
+                style={currentPage === 1 ? styles.paginationButtonDisabled : styles.paginationButton}
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
+
+              <span style={styles.paginationCurrent}>
+                {currentPage} / {totalPages}
+              </span>
+
+              <button
+                style={currentPage >= totalPages ? styles.paginationButtonDisabled : styles.paginationButton}
+                onClick={() => setCurrentPage(prev => prev + 1)}
+                disabled={currentPage >= totalPages}
+              >
+                Siguiente
+              </button>
+            </div>
           </>
         )}
 
