@@ -4,12 +4,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Image from "next/image";
 import withAuth from '../hoc/WithAuth';
 import Header2 from "@/components/common/Header_2";
-import styles from "@/app/config/theme/styles"; // Asegúrate de tener este import
+import styles from "@/app/config/theme/styles";
+import api from "@/utils/api";
 
 import { CiSquarePlus } from "react-icons/ci";
 import { useEffect, useRef, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
 
 const HEADER_HEIGHT = 100;
 
@@ -23,7 +23,7 @@ const PlanoPage = () => {
 
   const fetchMaps = async (page: number) => {
     try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload/maps?page=${page}`);
+      const res = await api.get(`/api/upload/maps?page=${page}`);
       setMaps(res.data.maps);
       setTotalPages(res.data.totalPages);
     } catch (err) {
@@ -63,7 +63,7 @@ const PlanoPage = () => {
 
     const token = localStorage.getItem("token");
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/upload/map`, formData, {
+      const res = await api.post(`/api/upload/map`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -89,21 +89,26 @@ const PlanoPage = () => {
       <Header2 />
       <main
         style={{
-          position: "absolute",
+          position: "fixed",
           top: `${HEADER_HEIGHT}px`,
           left: 0,
           width: "100%",
           height: `calc(100vh - ${HEADER_HEIGHT}px)`,
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: "center", 
+          paddingBottom: "80px", 
         }}
       >
         {maps.length > 0 ? (
           <Image
             src={maps[0]}
             alt="map"
-            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            style={{
+              maxWidth: "90%",
+              maxHeight: "calc(100% - 80px)",
+              objectFit: "contain"
+            }}
             width={1920}
             height={1080}
           />
@@ -134,8 +139,15 @@ const PlanoPage = () => {
               style={{ display: "none" }}
             />
 
-            {/* PAGINADO ESTILO CONSISTENTE */}
-            <div style={{ ...styles.buttonsContainerNext, position: "absolute", bottom: "24px", left: "24px" }}>
+            <div
+              style={{
+                ...styles.buttonsContainerNext,
+                position: "absolute",
+                bottom: "24px",
+                left: "50%",
+                transform: "translateX(-50%)",
+              }}
+            >
               <button
                 style={currentPage === 1 ? styles.paginationButtonDisabled : styles.paginationButton}
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
