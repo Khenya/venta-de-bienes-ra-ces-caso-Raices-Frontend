@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, FormEvent, useEffect } from "react";
-import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import api from '@/utils/api'; // ✅ CLIENTE PERSONALIZADO
 import { Colors } from "@/app/config/theme/Colors";
 
 interface EditPropertyModalProps {
@@ -45,17 +45,12 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
     };
 
     try {
-      await axios.patch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property/${propertyId}/state`,
-        requestData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          withCredentials: true,
-        }
-      );
+      await api.patch(`/api/protected/property/${propertyId}/state`, requestData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+      });
       onSave();
       onClose();
     } catch (error: any) {
@@ -92,7 +87,6 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                     <option value="CANCELADO">CANCELADO</option>
                     <option value="LIQUIDANDO">LIQUIDANDO</option>
                     <option value="CADUCADO">CADUCADO</option>
-                    <option value="RESERVADO">RESERVADO</option>
                     <option value="ALQUILADO">ALQUILADO</option>
                   </select>
                 </div>
@@ -120,7 +114,6 @@ const EditPropertyModal: React.FC<EditPropertyModalProps> = ({
                 />
               </div>
               <div className="row">
-
                 <div className="col-md-6 mb-3">
                   <label className="form-label" style={{ color: Colors.text_color }}>N° Registró DDRR</label>
                   <input

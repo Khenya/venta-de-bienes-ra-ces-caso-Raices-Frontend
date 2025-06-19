@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '@/utils/api';
 import { Row, Col, Spinner } from 'react-bootstrap';
 import { FaHouseChimney, FaTag, FaSackDollar } from 'react-icons/fa6';
 import { PiSealCheckFill } from 'react-icons/pi';
@@ -26,13 +26,9 @@ const PropertyStatsCard: React.FC = () => {
       if (!token) return;
 
       try {
-        const res = await axios.get<PropertyCountData>(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property-counts`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            withCredentials: true,
-          }
-        );
+        const res = await api.get<PropertyCountData>('/api/protected/property-counts', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setData(res.data);
         setLoading(false);
       } catch (err) {

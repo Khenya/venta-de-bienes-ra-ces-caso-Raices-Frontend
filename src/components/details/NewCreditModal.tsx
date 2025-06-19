@@ -1,20 +1,20 @@
 'use client';
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import api from '@/utils/api'; // ✅ cliente axios personalizado
 import { Colors } from '@/app/config/theme/Colors';
 
 interface NewCreditModalProps {
-  propertyId: number;// Asegúrate que esto sea number
+  propertyId: number;
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
 }
 
 const NewCreditModal: React.FC<NewCreditModalProps> = ({
-  propertyId,  // Recibimos customerId como prop
+  propertyId,
   isOpen,
   onClose,
   onSuccess,
@@ -53,13 +53,13 @@ const NewCreditModal: React.FC<NewCreditModalProps> = ({
         totalAmount: Number(formData.totalAmount),
         interestNumber: Number(formData.interestNumber),
         installmentsCount: Number(formData.installmentsCount),
-        propertyId: Number(propertyId)// Conversión explícita
+        propertyId: Number(propertyId),
       };
 
       console.log('Payload completo:', payload);
 
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/credits`,
+      const response = await api.post(
+        '/api/credits',
         payload,
         {
           headers: {

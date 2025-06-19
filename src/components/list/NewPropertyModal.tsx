@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, FormEvent } from "react";
-import axios from "axios";
-import { Colors } from "@/app/config/theme/Colors";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Colors } from "@/app/config/theme/Colors";
+import api from '@/utils/api';
 
 interface NewPropertyModalProps {
   isOpen: boolean;
@@ -84,12 +84,11 @@ const NewPropertyModal: React.FC<NewPropertyModalProps> = ({ isOpen, onClose, on
     };
 
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property`, requestData, {
+      await api.post('/api/protected/property', requestData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
-        },
-        withCredentials: true,
+        }
       });
       onSave();
       onClose();

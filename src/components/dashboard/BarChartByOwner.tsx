@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
   Chart as ChartJS,
   BarElement,
@@ -12,6 +11,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import Spinner from 'react-bootstrap/Spinner';
+import api from '@/utils/api';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -29,13 +29,11 @@ const BarChartByOwner: React.FC = () => {
       if (!token) return;
 
       try {
-        const res = await axios.get<OwnerStat[]>(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property-by-owner`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            withCredentials: true,
-          }
-        );
+        const res = await api.get<OwnerStat[]>('/api/protected/property-by-owner', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const labels = res.data.map(item => item.owner);
         const values = res.data.map(item => parseInt(item.count));

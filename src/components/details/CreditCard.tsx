@@ -6,7 +6,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import axios from 'axios';
+import api from '@/utils/api';
 
 import styles from '../../app/config/theme/Card.module.css';
 import { Colors } from "@/app/config/theme/Colors";
@@ -25,7 +25,7 @@ export interface Installment {
 interface CreditCardProps {
   propertyId: number;
   onInstallmentClick?: (installment: Installment) => void;
-  onCreditCreated?: () => void; 
+  onCreditCreated?: () => void;
 }
 
 interface JwtPayload {
@@ -77,16 +77,11 @@ const NewCreditModal = ({
 
       console.log('Creando crédito con payload:', payload);
 
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/credits`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+      await api.post('/api/credits', payload, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
+      });
 
       setFormData({
         totalAmount: 0,
@@ -162,8 +157,8 @@ const NewCreditModal = ({
           <Button variant="outline-secondary" onClick={onClose} disabled={loading}>
             Cancelar
           </Button>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={loading}
             style={{
               backgroundColor: Colors.text_color,
@@ -206,19 +201,11 @@ const CreditCard: React.FC<CreditCardProps> = ({
       setLoading(true);
       setError(null);
       const token = localStorage.getItem("token");
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/installments/property/${propertyId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
+      const response = await api.get(`/api/installments/property/${propertyId}`, {
+        headers: { Authorization: `Bearer ${token}` }
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = response.data;
       const installmentsData = data.installments || [];
       setInstallments(installmentsData);
       setHasCredit(installmentsData.length > 0);
@@ -259,23 +246,14 @@ const CreditCard: React.FC<CreditCardProps> = ({
       const token = localStorage.getItem('token');
       if (!token) throw new Error('Token no disponible');
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/installments/pay/${installmentId}`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-        }
-      );
+      const response = await api.put(`/api/installments/pay/${installmentId}`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'No se pudo registrar el pago');
+      if (response.status !== 200) {
+        throw new Error('No se pudo registrar el pago');
       }
 
-      showSuccess('Pago registrado exitosamente');
       fetchInstallments();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Hubo un error al registrar el pago');
@@ -283,9 +261,8 @@ const CreditCard: React.FC<CreditCardProps> = ({
   };
 
   const handleCreditCreated = () => {
-    fetchInstallments(); // Recargar las cuotas
-    showSuccess('Crédito creado exitosamente');
-    onCreditCreated?.(); // Notificar al componente padre si es necesario
+    fetchInstallments(); 
+    onCreditCreated?.(); 
   };
 
   if (loading) {

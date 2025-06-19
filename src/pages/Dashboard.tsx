@@ -2,11 +2,11 @@
 
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Spinner from 'react-bootstrap/Spinner';
 
+import api from '@/utils/api'; 
 import PropertyStatsCard from "@/components/dashboard/PropertyStatsCard";
 import BarChartByOwner from "@/components/dashboard/BarChartByOwner";
 import Header2 from "@/components/common/Header_2";
@@ -29,22 +29,23 @@ const chartCardStyle = {
 
 const PropertyPieChart = () => {
   const [chartData, setChartData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        console.warn("⚠️ No hay token disponible en localStorage.");
+        setLoading(false);
+        return;
+      }
 
       try {
-        const res = await axios.get<PropertyStateStat[]>(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/property-stats`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            withCredentials: true,
-          }
-        );
+        const res = await api.get<PropertyStateStat[]>('/api/protected/property-stats', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const labels = res.data.map((item: PropertyStateStat) => item.state.toUpperCase());
         const values = res.data.map((item: PropertyStateStat) => parseInt(item.count));
@@ -69,16 +70,23 @@ const PropertyPieChart = () => {
         });
       } catch (err) {
         console.error('Error al cargar gráfico:', err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchStats();
   }, []);
 
-  if (!chartData) return
-  <Spinner animation="border" role="status" style={{ color: '#000' }}>
-    <span className="visually-hidden">Loading...</span>
-  </Spinner>;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+        <Spinner animation="border" role="status" style={{ color: '#000' }}>
+          <span className="visually-hidden">Cargando...</span>
+        </Spinner>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -96,7 +104,7 @@ const PropertyPieChart = () => {
             <div className="row g-4">
               <div className="col-md-6">
                 <div style={chartCardStyle}>
-                  <Pie data={chartData} />
+                  {chartData ? <Pie data={chartData} /> : <p>No hay datos disponibles.</p>}
                 </div>
               </div>
               <div className="col-md-6">

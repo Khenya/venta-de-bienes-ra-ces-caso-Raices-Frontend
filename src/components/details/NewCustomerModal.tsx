@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, FormEvent, useEffect } from "react";
-import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import api from "@/utils/api"; // ✅ Cliente axios centralizado
 import { Colors } from "@/app/config/theme/Colors";
 
 interface NewCustomerModalProps {
@@ -52,17 +52,13 @@ const NewCustomerModal: React.FC<NewCustomerModalProps> = ({
     };
 
     try {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/protected/customer`,
-        requestData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          withCredentials: true,
-        }
-      );
+      await api.post("/api/protected/customer", requestData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+      });
+
       onSave();
       onClose();
     } catch (error: any) {
